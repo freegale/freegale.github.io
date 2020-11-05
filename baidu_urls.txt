@@ -1,0 +1,14 @@
+http://freegale.github.io/posts/how-to-normalize-commit.html
+http://freegale.github.io/posts/GraphQL-vs-REST.html
+http://freegale.github.io/posts/axios-or-fetch-api.html
+http://freegale.github.io/posts/regex-basic-usage.html
+http://freegale.github.io/posts/complete-guide-grid.html
+http://freegale.github.io/posts/git-who-moved-my-cheese.html
+http://freegale.github.io/posts/screenshot.html
+http://freegale.github.io/posts/backup-hexo-to-github.html
+http://freegale.github.io/posts/hexo-deploy-to-VPS.html
+http://freegale.github.io/posts/hexo-advanced-settings.html
+http://freegale.github.io/posts/hexo-theme-beautify.html
+http://freegale.github.io/posts/hexo-writing-skills.html
+http://freegale.github.io/posts/hexo-get-started.html
+http://freegale.github.io/posts/prologue.html
