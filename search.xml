@@ -1,6 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>搭建博客时遇到的问题</title>
+    <url>/posts/Defects-when-setting-up-my-blog.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>今天在搭建博客的过程中间，大概遇到了这么些坑，唉：</p>
+<ol>
+<li><p>安装<code>node</code>，听说要让电脑上实现多版本管理，所以就要安装<code>nvm</code>，要安装<code>nvm</code>，就要用<code>curl</code> balabala命令，结果遇到了connect refuse异常，需要配置<code>/etc/hosts</code>文件，也就是下面这样</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 在hosts文件末尾添加</span><br><span class="line">199.232.68.133 raw.githubusercontent.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在配置好hosts文件之后，发现nvm安装巨慢无比，于是搜索发现需要修改<code>install.sh</code>文件，替换成清华或者中科院或者淘宝的源。于是进行替换，替换完成后顺利安装nvm。</p>
+</li>
+</ol>
+<a id="more"></a>
+<p>  2.1 安装后运行nvm，发现找不到命令，因为在zshell里没有增加配置 </p>
+<ol start="3">
+<li><p>好的，修改了<code>～/.zshrc</code> 配置文件，结果发现修改后每次打开命令行窗口，弹出什么<code>compdef</code>命令找不到</p>
+</li>
+<li><p>搜索原因，找到需要将最后一行配置注释掉，好的注释掉了。</p>
+</li>
+<li><p>开始用<code>nvm</code>安装<code>node</code>，巨慢无比，好的，替换register为淘宝镜像</p>
+</li>
+<li><p>利用<code>nvm</code>安装<code>node</code>最新稳定版本 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nvm install stable</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>成功了。</p>
+<ol start="7">
+<li><p>从网上找现成的blog仓库，<code>git clone</code>，提示需要安装<code>xcode 命令行工具</code>，excuse me？</p>
+</li>
+<li><p>照着提示安装，下载完来一句<code>您已经安装过了</code>？ excuse me again？</p>
+</li>
+<li><p>反复试了几遍后，好吧， 从苹果官网下最新的安装包，啥也没提示，安装成功了。</p>
+</li>
+<li><p>继续<code>git clone</code>，成功了。一顿改造<code>config</code>文件。</p>
+</li>
+<li><p>然后安装<code>hexo</code>：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>巨慢无比</p>
+<ol start="12">
+<li><p>OK，习惯了，把<code>npm</code>的register替换为淘宝镜像，用的<code>nrm</code>，好在搞定了。</p>
+</li>
+<li><p>启动<code>hexo</code>工程, 又报了个什么错误来着，记不住了，好在好改。</p>
+</li>
+<li><p>工程顺利启动，添加和修改各种功能，blog从本地跑起来了。</p>
+</li>
+<li><p>发布blog，上<code>github.io</code>，报错？<code>typeError [ERR_INVALID_ARG_TYPE]: The &quot;mode&quot; argument must be integer. Recei...</code> WTF?</p>
+</li>
+<li><p>继续追查，<code>node</code> 版本过高，擦</p>
+</li>
+<li><p>好在有<code>nvm</code>，这时候用发现nvm真是好东西，所以赶紧从15降到了12.</p>
+</li>
+<li><p>重新安装一次：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -rf node_modules</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>好了，这回可以了，运行<code>hexo</code>，找不到命令？什么情况？把我的hexo也给删了？</p>
+<ol start="19">
+<li><p>好吧，重新安装一次<code>hexo</code>，这回终于发布成功了。</p>
+</li>
+<li><p>期间还遇到一些小问题，比如<code>hexo douban</code>啦, <code>baidu submit</code>影响发布啦之类的问题，按下不表</p>
+</li>
+</ol>
+<p>这还是网上相对成熟的方案，出了这么多幺蛾子，开源的东西真是一言难尽。</p>
+]]></content>
+      <categories>
+        <category>博客</category>
+        <category>技术文章</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>缺陷</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>「译」GraphQL与REST，优势是什么</title>
     <url>/posts/GraphQL-vs-REST.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="note info"><p>原文链接： <a href="https://www.manifold.co/blog/graphql-vs-rest-whats-the-advantage" target="_blank" rel="noopener">GraphQL vs. REST: What’s The Advantage?</a></p></div>
@@ -91,76 +166,67 @@
       </tags>
   </entry>
   <entry>
-    <title>Defects when setting up my blog</title>
-    <url>/posts/Defects-when-setting-up-my-blog.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>今天在搭建博客的过程中间，大概遇到了这么些坑，唉：</p>
-<ol>
-<li><p>安装<code>node</code>，听说要让电脑上实现多版本管理，所以就要安装<code>nvm</code>，要安装<code>nvm</code>，就要用<code>curl</code> balabala命令，结果遇到了connect refuse异常，需要配置<code>/etc/hosts</code>文件，也就是下面这样</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 在hosts文件末尾添加</span><br><span class="line">199.232.68.133 raw.githubusercontent.com</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在配置好hosts文件之后，发现nvm安装巨慢无比，于是搜索发现需要修改<code>install.sh</code>文件，替换成清华或者中科院或者淘宝的源。于是进行替换，替换完成后顺利安装nvm。</p>
-</li>
-</ol>
+    <title>「译」axios和fetch，我们应该用哪个？</title>
+    <url>/posts/axios-or-fetch-api.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="note info"><p>原文链接： <a href="https://blog.logrocket.com/axios-or-fetch-api/" target="_blank" rel="noopener">Axios or fetch(): Which should you use?</a></p></div>
+<p>Axios 一直是我开发项目时发送 HTTP 请求的首选。最近看到一篇外文博客里，详细介绍了如何在使用 fetch 的时候实现 Axios 的一些关键特性，以使我们能够方便的过渡到 fetch 这一原生 API 上。</p>
 <a id="more"></a>
-<p>  2.1 安装后运行nvm，发现找不到命令，因为在zshell里没有增加配置 </p>
-<ol start="3">
-<li><p>好的，修改了<code>～/.zshrc</code> 配置文件，结果发现修改后每次打开命令行窗口，弹出什么<code>compdef</code>命令找不到</p>
-</li>
-<li><p>搜索原因，找到需要将最后一行配置注释掉，好的注释掉了。</p>
-</li>
-<li><p>开始用<code>nvm</code>安装<code>node</code>，巨慢无比，好的，替换register为淘宝镜像</p>
-</li>
-<li><p>利用<code>nvm</code>安装<code>node</code>最新稳定版本 </p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nvm install stable</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>成功了。</p>
-<ol start="7">
-<li><p>从网上找现成的blog仓库，<code>git clone</code>，提示需要安装<code>xcode 命令行工具</code>，excuse me？</p>
-</li>
-<li><p>照着提示安装，下载完来一句<code>您已经安装过了</code>？ excuse me again？</p>
-</li>
-<li><p>反复试了几遍后，好吧， 从苹果官网下最新的安装包，啥也没提示，安装成功了。</p>
-</li>
-<li><p>继续<code>git clone</code>，成功了。一顿改造<code>config</code>文件。</p>
-</li>
-<li><p>然后安装<code>hexo</code>：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>巨慢无比</p>
-<ol start="12">
-<li><p>OK，习惯了，把<code>npm</code>的register替换为淘宝镜像，用的<code>nrm</code>，好在搞定了。</p>
-</li>
-<li><p>启动<code>hexo</code>工程, 又报了个什么错误来着，记不住了，好在好改。</p>
-</li>
-<li><p>工程顺利启动，添加和修改各种功能，blog从本地跑起来了。</p>
-</li>
-<li><p>发布blog，上<code>github.io</code>，报错？<code>typeError [ERR_INVALID_ARG_TYPE]: The &quot;mode&quot; argument must be integer. Recei...</code> WTF?</p>
-</li>
-<li><p>继续追查，<code>node</code> 版本过高，擦</p>
-</li>
-<li><p>好在有<code>nvm</code>，这时候用发现nvm真是好东西，所以赶紧从15降到了12.</p>
-</li>
-<li><p>重新安装一次：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -rf node_modules</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>好了，这回可以了，运行<code>hexo</code>，找不到命令？什么情况？把我的hexo也给删了？</p>
-<ol start="19">
-<li><p>好吧，重新安装一次<code>hexo</code>，这回终于发布成功了。</p>
-</li>
-<li><p>期间还遇到一些小问题，比如<code>hexo douban</code>啦, <code>baidu submit</code>影响发布啦之类的问题，按下不表</p>
-</li>
-</ol>
-<p>这还是网上相对成熟的方案，出了这么多幺蛾子，开源的东西真是一言难尽。</p>
+<hr>
+<p>在我最近的一篇文章 <a href="https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/#new_tab" target="_blank" rel="noopener">如何像一个老手一样通过 Axios 发送 HTTP 请求</a> 中，我讨论了使用 Axios 的好处。然而 Axios 并非总是理想的解决方案，有时还有其他更好的做法来发送 HTTP 请求。</p>
+<p>毫无疑问，由于更易使用，一些开发者更喜欢 Axios 而非原生的内置 API。但也有很多人高估了这个库的必要性。<code>fecth()</code> API 能够完美复现 Axios 的关键特性，并且它还有一个额外的优点：已内置在所有现代浏览器里。</p>
+<h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><p>在我们进一步深入 Axios 的更多高级特性之前，我们先来比较一下它和 <code>fetch()</code> 的基本语法。这里展示了你该如何通过 Axios 发送一个带有自定义头部信息的 POST 请求到一个 URL 地址。Axios 将会帮你自动把响应数据转成 JSON 格式。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  url: <span class="string">"http://localhost/test.htm"</span>,</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">axios(options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>现在我们将这份代码与 <code>fetch()</code> 版本的代码比较一下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fetch()</span></span><br><span class="line"><span class="keyword">const</span> url = <span class="string">"http://localhost/test.htm"</span>;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">fetch(url, options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>为发送数据，<code>fetch()</code> 使用的是 body 属性，而 Axios 使用的是 data 属性</li>
+<li><code>fetch()</code> 中的数据需要处理为字符串</li>
+<li>在 <code>fetch()</code> 中， URL 是作为一个参数传递的，然而在 Axios 中，URL 是被放在 options 对象中传入的</li>
+</ul>
+<h1 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h1><p>Axios 的一个主要卖点即是它广泛的浏览器兼容性，即使是如 IE11 这样的老浏览器也能正常运行 Axios。另一方面，<code>fetch()</code> 只支持 Chrome 42+, FireFox 39+, Edge 14+ 以及 Safari 10.1+。（你可以在 <a href="https://caniuse.com/#search=Fetch" target="_blank" rel="noopener">Can I use</a> 里查看完整的兼容性表）</p>
+<p>如何向后兼容性是你使用 Axios 的唯一理由，那其实你不是真的需要一个 HTTP 库。作为替代，你可以在不支持 <code>fetch()</code> 的浏览器上使用 <a href="https://github.com/github/fetch" target="_blank" rel="noopener">这样</a> 的 polyfill 以实现类似的功能。要开始使用这样的 fetch polyfill，通过 npm 命令安装它：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install whatwg-fetch --save</span><br></pre></td></tr></table></figure>
+<p>然后你可以像这样发送请求：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &apos;whatwg-fetch&apos;</span><br><span class="line">window.fetch(...)</span><br></pre></td></tr></table></figure>
+<p>记住，在老式浏览器上你可能还需要一个 promise 的 polyfill。</p>
+<h1 id="响应超时"><a href="#响应超时" class="headerlink" title="响应超时"></a>响应超时</h1><p>在 Axios 中设置响应超时很简单，这也成为了开发者选择它的另外一个原因。你可以在配置对象中设置 <code>timeout</code> 属性以设置请求终止的毫秒数，例如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  method: <span class="string">"post"</span>,</span><br><span class="line">  url: <span class="string">"/login"</span>,</span><br><span class="line">  timeout: <span class="number">4000</span>, <span class="comment">// 4 seconds timeout</span></span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
+<p><code>fetch()</code> 通过 <code>AbortController</code> 接口来提供类似的功能。虽然不如 Axios 来的那么简单：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> controller = <span class="keyword">new</span> AbortController();</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  signal: controller.signal,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> promise = fetch(<span class="string">"/login"</span>, options);</span><br><span class="line"><span class="keyword">const</span> timeoutId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> controller.abort(), <span class="number">4000</span>);</span><br><span class="line"></span><br><span class="line">promise</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
+<p>这里，我们通过 <code>AbortController.AbortController()</code> 构造函数创建一个 <code>AbortController</code>，之后我们将用这个对象取消请求。<code>signal</code> 是 <code>AbortController</code> 的一个只读属性，提供了与请求通信或取消的方法。如果服务器在 4 秒内没有响应，<code>controller.abort()</code> 就会被调用，然后通信操作会被终止。</p>
+<h1 id="自动-JSON-数据转换"><a href="#自动-JSON-数据转换" class="headerlink" title="自动 JSON 数据转换"></a>自动 JSON 数据转换</h1><p>正如我们之前说过的，Axios 在发送请求的时候会自动将数据字符串化（尽管你也可以覆写默认的行为来定义一个不同的转换机制）。但当使用 <code>fetch()</code> 的时候，你需要手动做这个事。比较一下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/orgs/axios"</span>).then(</span><br><span class="line">  response =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(response.data);</span><br><span class="line">  &#125;,</span><br><span class="line">  error =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fetch()</span></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json()) <span class="comment">// one extra step</span></span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(error));</span><br></pre></td></tr></table></figure>
+<p>数据自动转换是一个不错的功能，但再一次的，这并不是什么你在 <code>fetch()</code> 里做不了的东西。</p>
+<h1 id="HTTP-拦截器"><a href="#HTTP-拦截器" class="headerlink" title="HTTP 拦截器"></a>HTTP 拦截器</h1><p>Axios 的一个关键特性即是它拦截 HTTP 请求的能力。HTTP 拦截器在你需要测试或改变从你的应用到服务器（反之亦然）的 HTTP 请求的时候派得上用场（例如，日志、权限认证等）。有了拦截器，你不再需要为每个 HTTP 请求写单独的代码。</p>
+<p>这里展示了你该如何在 Axios 里生命一个请求拦截器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.interceptors.request.use(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// log a message before any HTTP request is sent</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sent a GET request</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/users/sideshowbarker"</span>).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在这里，<code>axios.interceptors.request.use()</code> 方法用来定义一段在 HTTP 请求发送之前的代码逻辑。</p>
+<p>默认情况下，<code>fetch()</code> 并没有提供一个拦截 HTTP 的方法，但是想出一个变通的办法并不难。你可以像这样覆写全局的 fetch 方法来定义一个你自己的拦截器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fetch = (<span class="function"><span class="params">originalFetch</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...<span class="built_in">arguments</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = originalFetch.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">return</span> result.then(<span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>));</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)(fetch);</span><br><span class="line"></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="下载进度"><a href="#下载进度" class="headerlink" title="下载进度"></a>下载进度</h1><p>进度指示器在下载大型资源的时候非常有用，尤其是那些网速较慢的用户。以前，JavaScript 开发者使用<code>XMLHttpRequest.onprogress</code>回调处理器来实现进度指示器。</p>
+<p><a href="https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/" target="_blank" rel="noopener">Fetch API</a> 没有 <code>onprogress</code> 处理器。取而代之的是，它通过响应对象的 body 属性提供了一个<code>ReadableStream</code>的实例。</p>
+<p>下面的例子展示了通过使用 <code>ReadableStream</code> 来为用户在图像下载过程中提供即时反馈：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// original code: https://github.com/AnthumChris/fetch-progress-indicators</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"progress"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span>progress<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="meta">  "use strict"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> element = <span class="built_in">document</span>.getElementById(<span class="string">"progress"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  fetch(<span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>)</span></span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line">      if (!response.ok) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(response.status + <span class="string">" "</span> + response.statusText);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure ReadableStream is supported</span></span></span><br><span class="line">      if (!response.body) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"ReadableStream not yet supported in this browser."</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// store the size of the entity-body, in bytes</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> contentLength = response.headers.get(<span class="string">"content-length"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure contentLength is available</span></span></span><br><span class="line">      if (!contentLength) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"Content-Length response header unavailable"</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// parse the integer into a base-10 number</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> total = <span class="built_in">parseInt</span>(contentLength, <span class="number">10</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> loaded = <span class="number">0</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="keyword">new</span> Response(</span></span><br><span class="line"><span class="javascript">        <span class="comment">// create and return a readable stream</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> ReadableStream(&#123;</span></span><br><span class="line">          start(controller) &#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">const</span> reader = response.body.getReader();</span></span><br><span class="line"></span><br><span class="line">            read();</span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line">              reader</span><br><span class="line">                .read()</span><br><span class="line"><span class="javascript">                .then(<span class="function">(<span class="params">&#123; done, value &#125;</span>) =&gt;</span> &#123;</span></span><br><span class="line">                  if (done) &#123;</span><br><span class="line">                    controller.close();</span><br><span class="line"><span class="javascript">                    <span class="keyword">return</span>;</span></span><br><span class="line">                  &#125;</span><br><span class="line">                  loaded += value.byteLength;</span><br><span class="line">                  progress(&#123; loaded, total &#125;);</span><br><span class="line">                  controller.enqueue(value);</span><br><span class="line">                  read();</span><br><span class="line">                &#125;)</span><br><span class="line"><span class="javascript">                .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">                  <span class="built_in">console</span>.error(error);</span></span><br><span class="line">                  controller.error(error);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span></span></span><br><span class="line"><span class="javascript">      <span class="comment">// construct a blob from the data</span></span></span><br><span class="line">      response.blob()</span><br><span class="line">    )</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// insert the downloaded image into the page</span></span></span><br><span class="line"><span class="javascript">      <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).src = URL.createObjectURL(data);</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.error(error);</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">progress</span>(<span class="params">&#123; loaded, total &#125;</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    element.innerHTML = <span class="built_in">Math</span>.round((loaded / total) * <span class="number">100</span>) + <span class="string">"%"</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在 Axios 中实现一个进度指示器更加简单，尤其是当你使用了 <a href="https://github.com/rikmms/progress-bar-4-axios/" target="_blank" rel="noopener">Axios Progress Bar</a> 模块。首先，你需要包含以下样式和脚本：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">  <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">type</span>=<span class="string">"text/css"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">href</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/nprogress.css"</span></span></span><br><span class="line"><span class="tag">/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后你可以像以下这样来实现进度条：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">  loadProgressBar();</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> url =</span></span><br><span class="line"><span class="javascript">    <span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">downloadFile</span>(<span class="params">url</span>) </span>&#123;</span></span><br><span class="line">    axios</span><br><span class="line"><span class="javascript">      .get(url, &#123; <span class="attr">responseType</span>: <span class="string">"blob"</span> &#125;)</span></span><br><span class="line"><span class="javascript">      .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> reader = <span class="keyword">new</span> <span class="built_in">window</span>.FileReader();</span></span><br><span class="line">        reader.readAsDataURL(response.data);</span><br><span class="line"><span class="javascript">        reader.onload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).setAttribute(<span class="string">"src"</span>, reader.result);</span></span><br><span class="line">        &#125;;</span><br><span class="line">      &#125;)</span><br><span class="line"><span class="javascript">      .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(error);</span></span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  downloadFile(url);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这段代码使用了 <code>FileReader</code> 去异步读取下载的图像。 <code>readAsDataURL</code> 方法以 base64 格式来返回图像数据，然后嵌入到 <code>img</code> 标签的 <code>src</code> 属性以展示图像。</p>
+<h1 id="并行请求"><a href="#并行请求" class="headerlink" title="并行请求"></a>并行请求</h1><p>为同时发送多个请求，Axios 提供了<code>axios.all()</code>方法。只要传递一个请求数组到这个方法，再使用 <code>axios.spread()</code> 来将响应数组的属性指定到不同的变量：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios</span><br><span class="line">  .all([</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">  ])</span><br><span class="line">  .then(</span><br><span class="line">    axios.spread(<span class="function">(<span class="params">obj1, obj2</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// Both requests are now complete</span></span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj1.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj1.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj2.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj2.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
+<p>你可以通过内置的 <code>Promise.all()</code> 方法来实现相同的结果。将 fetch 请求作为数组传递给 <code>Promise.all()</code>。然后，通过 <code>async</code> 函数处理响应，如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.all([</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">])</span><br><span class="line">  .then(<span class="keyword">async</span> ([res1, res2]) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> a = <span class="keyword">await</span> res1.json();</span><br><span class="line">    <span class="keyword">const</span> b = <span class="keyword">await</span> res2.json();</span><br><span class="line">    <span class="built_in">console</span>.log(a.login + <span class="string">" has "</span> + a.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(b.login + <span class="string">" has "</span> + b.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>Axios 在紧密的包装中为大多数的 HTTP 通信提供了易于使用的的 API。但是，如果你更喜欢坚持原生 API，那就没什么能够阻挡你实现 Axios 的特性的。</p>
+<p>如文中讨论的，我们在使用浏览器提供的 <code>fetch()</code> 方法时完全有能力复现 Axios 的关键特性。最后，是否值得加载一个客户端 HTTP API 取决于你是否能舒服的使用内置 API 工作。</p>
 ]]></content>
       <categories>
-        <category>博客</category>
-        <category>技术文章</category>
+        <category>技术</category>
+        <category>前端</category>
       </categories>
       <tags>
-        <tag>hexo 缺陷 博客</tag>
+        <tag>翻译</tag>
+        <tag>JavaScript</tag>
       </tags>
   </entry>
   <entry>
@@ -661,174 +727,6 @@
       </tags>
   </entry>
   <entry>
-    <title>「译」axios和fetch，我们应该用哪个？</title>
-    <url>/posts/axios-or-fetch-api.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="note info"><p>原文链接： <a href="https://blog.logrocket.com/axios-or-fetch-api/" target="_blank" rel="noopener">Axios or fetch(): Which should you use?</a></p></div>
-<p>Axios 一直是我开发项目时发送 HTTP 请求的首选。最近看到一篇外文博客里，详细介绍了如何在使用 fetch 的时候实现 Axios 的一些关键特性，以使我们能够方便的过渡到 fetch 这一原生 API 上。</p>
-<a id="more"></a>
-<hr>
-<p>在我最近的一篇文章 <a href="https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/#new_tab" target="_blank" rel="noopener">如何像一个老手一样通过 Axios 发送 HTTP 请求</a> 中，我讨论了使用 Axios 的好处。然而 Axios 并非总是理想的解决方案，有时还有其他更好的做法来发送 HTTP 请求。</p>
-<p>毫无疑问，由于更易使用，一些开发者更喜欢 Axios 而非原生的内置 API。但也有很多人高估了这个库的必要性。<code>fecth()</code> API 能够完美复现 Axios 的关键特性，并且它还有一个额外的优点：已内置在所有现代浏览器里。</p>
-<h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><p>在我们进一步深入 Axios 的更多高级特性之前，我们先来比较一下它和 <code>fetch()</code> 的基本语法。这里展示了你该如何通过 Axios 发送一个带有自定义头部信息的 POST 请求到一个 URL 地址。Axios 将会帮你自动把响应数据转成 JSON 格式。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  url: <span class="string">"http://localhost/test.htm"</span>,</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">axios(options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>现在我们将这份代码与 <code>fetch()</code> 版本的代码比较一下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fetch()</span></span><br><span class="line"><span class="keyword">const</span> url = <span class="string">"http://localhost/test.htm"</span>;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">fetch(url, options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>注意：</p>
-<ul>
-<li>为发送数据，<code>fetch()</code> 使用的是 body 属性，而 Axios 使用的是 data 属性</li>
-<li><code>fetch()</code> 中的数据需要处理为字符串</li>
-<li>在 <code>fetch()</code> 中， URL 是作为一个参数传递的，然而在 Axios 中，URL 是被放在 options 对象中传入的</li>
-</ul>
-<h1 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h1><p>Axios 的一个主要卖点即是它广泛的浏览器兼容性，即使是如 IE11 这样的老浏览器也能正常运行 Axios。另一方面，<code>fetch()</code> 只支持 Chrome 42+, FireFox 39+, Edge 14+ 以及 Safari 10.1+。（你可以在 <a href="https://caniuse.com/#search=Fetch" target="_blank" rel="noopener">Can I use</a> 里查看完整的兼容性表）</p>
-<p>如何向后兼容性是你使用 Axios 的唯一理由，那其实你不是真的需要一个 HTTP 库。作为替代，你可以在不支持 <code>fetch()</code> 的浏览器上使用 <a href="https://github.com/github/fetch" target="_blank" rel="noopener">这样</a> 的 polyfill 以实现类似的功能。要开始使用这样的 fetch polyfill，通过 npm 命令安装它：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install whatwg-fetch --save</span><br></pre></td></tr></table></figure>
-<p>然后你可以像这样发送请求：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &apos;whatwg-fetch&apos;</span><br><span class="line">window.fetch(...)</span><br></pre></td></tr></table></figure>
-<p>记住，在老式浏览器上你可能还需要一个 promise 的 polyfill。</p>
-<h1 id="响应超时"><a href="#响应超时" class="headerlink" title="响应超时"></a>响应超时</h1><p>在 Axios 中设置响应超时很简单，这也成为了开发者选择它的另外一个原因。你可以在配置对象中设置 <code>timeout</code> 属性以设置请求终止的毫秒数，例如：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  method: <span class="string">"post"</span>,</span><br><span class="line">  url: <span class="string">"/login"</span>,</span><br><span class="line">  timeout: <span class="number">4000</span>, <span class="comment">// 4 seconds timeout</span></span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
-<p><code>fetch()</code> 通过 <code>AbortController</code> 接口来提供类似的功能。虽然不如 Axios 来的那么简单：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> controller = <span class="keyword">new</span> AbortController();</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  signal: controller.signal,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> promise = fetch(<span class="string">"/login"</span>, options);</span><br><span class="line"><span class="keyword">const</span> timeoutId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> controller.abort(), <span class="number">4000</span>);</span><br><span class="line"></span><br><span class="line">promise</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
-<p>这里，我们通过 <code>AbortController.AbortController()</code> 构造函数创建一个 <code>AbortController</code>，之后我们将用这个对象取消请求。<code>signal</code> 是 <code>AbortController</code> 的一个只读属性，提供了与请求通信或取消的方法。如果服务器在 4 秒内没有响应，<code>controller.abort()</code> 就会被调用，然后通信操作会被终止。</p>
-<h1 id="自动-JSON-数据转换"><a href="#自动-JSON-数据转换" class="headerlink" title="自动 JSON 数据转换"></a>自动 JSON 数据转换</h1><p>正如我们之前说过的，Axios 在发送请求的时候会自动将数据字符串化（尽管你也可以覆写默认的行为来定义一个不同的转换机制）。但当使用 <code>fetch()</code> 的时候，你需要手动做这个事。比较一下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/orgs/axios"</span>).then(</span><br><span class="line">  response =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(response.data);</span><br><span class="line">  &#125;,</span><br><span class="line">  error =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fetch()</span></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json()) <span class="comment">// one extra step</span></span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(error));</span><br></pre></td></tr></table></figure>
-<p>数据自动转换是一个不错的功能，但再一次的，这并不是什么你在 <code>fetch()</code> 里做不了的东西。</p>
-<h1 id="HTTP-拦截器"><a href="#HTTP-拦截器" class="headerlink" title="HTTP 拦截器"></a>HTTP 拦截器</h1><p>Axios 的一个关键特性即是它拦截 HTTP 请求的能力。HTTP 拦截器在你需要测试或改变从你的应用到服务器（反之亦然）的 HTTP 请求的时候派得上用场（例如，日志、权限认证等）。有了拦截器，你不再需要为每个 HTTP 请求写单独的代码。</p>
-<p>这里展示了你该如何在 Axios 里生命一个请求拦截器：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.interceptors.request.use(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// log a message before any HTTP request is sent</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sent a GET request</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/users/sideshowbarker"</span>).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>在这里，<code>axios.interceptors.request.use()</code> 方法用来定义一段在 HTTP 请求发送之前的代码逻辑。</p>
-<p>默认情况下，<code>fetch()</code> 并没有提供一个拦截 HTTP 的方法，但是想出一个变通的办法并不难。你可以像这样覆写全局的 fetch 方法来定义一个你自己的拦截器：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fetch = (<span class="function"><span class="params">originalFetch</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...<span class="built_in">arguments</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = originalFetch.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">return</span> result.then(<span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>));</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)(fetch);</span><br><span class="line"></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="下载进度"><a href="#下载进度" class="headerlink" title="下载进度"></a>下载进度</h1><p>进度指示器在下载大型资源的时候非常有用，尤其是那些网速较慢的用户。以前，JavaScript 开发者使用<code>XMLHttpRequest.onprogress</code>回调处理器来实现进度指示器。</p>
-<p><a href="https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/" target="_blank" rel="noopener">Fetch API</a> 没有 <code>onprogress</code> 处理器。取而代之的是，它通过响应对象的 body 属性提供了一个<code>ReadableStream</code>的实例。</p>
-<p>下面的例子展示了通过使用 <code>ReadableStream</code> 来为用户在图像下载过程中提供即时反馈：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// original code: https://github.com/AnthumChris/fetch-progress-indicators</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"progress"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span>progress<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="meta">  "use strict"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> element = <span class="built_in">document</span>.getElementById(<span class="string">"progress"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  fetch(<span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>)</span></span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line">      if (!response.ok) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(response.status + <span class="string">" "</span> + response.statusText);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure ReadableStream is supported</span></span></span><br><span class="line">      if (!response.body) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"ReadableStream not yet supported in this browser."</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// store the size of the entity-body, in bytes</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> contentLength = response.headers.get(<span class="string">"content-length"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure contentLength is available</span></span></span><br><span class="line">      if (!contentLength) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"Content-Length response header unavailable"</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// parse the integer into a base-10 number</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> total = <span class="built_in">parseInt</span>(contentLength, <span class="number">10</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> loaded = <span class="number">0</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="keyword">new</span> Response(</span></span><br><span class="line"><span class="javascript">        <span class="comment">// create and return a readable stream</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> ReadableStream(&#123;</span></span><br><span class="line">          start(controller) &#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">const</span> reader = response.body.getReader();</span></span><br><span class="line"></span><br><span class="line">            read();</span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line">              reader</span><br><span class="line">                .read()</span><br><span class="line"><span class="javascript">                .then(<span class="function">(<span class="params">&#123; done, value &#125;</span>) =&gt;</span> &#123;</span></span><br><span class="line">                  if (done) &#123;</span><br><span class="line">                    controller.close();</span><br><span class="line"><span class="javascript">                    <span class="keyword">return</span>;</span></span><br><span class="line">                  &#125;</span><br><span class="line">                  loaded += value.byteLength;</span><br><span class="line">                  progress(&#123; loaded, total &#125;);</span><br><span class="line">                  controller.enqueue(value);</span><br><span class="line">                  read();</span><br><span class="line">                &#125;)</span><br><span class="line"><span class="javascript">                .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">                  <span class="built_in">console</span>.error(error);</span></span><br><span class="line">                  controller.error(error);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span></span></span><br><span class="line"><span class="javascript">      <span class="comment">// construct a blob from the data</span></span></span><br><span class="line">      response.blob()</span><br><span class="line">    )</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// insert the downloaded image into the page</span></span></span><br><span class="line"><span class="javascript">      <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).src = URL.createObjectURL(data);</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.error(error);</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">progress</span>(<span class="params">&#123; loaded, total &#125;</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    element.innerHTML = <span class="built_in">Math</span>.round((loaded / total) * <span class="number">100</span>) + <span class="string">"%"</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>在 Axios 中实现一个进度指示器更加简单，尤其是当你使用了 <a href="https://github.com/rikmms/progress-bar-4-axios/" target="_blank" rel="noopener">Axios Progress Bar</a> 模块。首先，你需要包含以下样式和脚本：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">  <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">type</span>=<span class="string">"text/css"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">href</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/nprogress.css"</span></span></span><br><span class="line"><span class="tag">/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>然后你可以像以下这样来实现进度条：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">  loadProgressBar();</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> url =</span></span><br><span class="line"><span class="javascript">    <span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">downloadFile</span>(<span class="params">url</span>) </span>&#123;</span></span><br><span class="line">    axios</span><br><span class="line"><span class="javascript">      .get(url, &#123; <span class="attr">responseType</span>: <span class="string">"blob"</span> &#125;)</span></span><br><span class="line"><span class="javascript">      .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> reader = <span class="keyword">new</span> <span class="built_in">window</span>.FileReader();</span></span><br><span class="line">        reader.readAsDataURL(response.data);</span><br><span class="line"><span class="javascript">        reader.onload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).setAttribute(<span class="string">"src"</span>, reader.result);</span></span><br><span class="line">        &#125;;</span><br><span class="line">      &#125;)</span><br><span class="line"><span class="javascript">      .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(error);</span></span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  downloadFile(url);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这段代码使用了 <code>FileReader</code> 去异步读取下载的图像。 <code>readAsDataURL</code> 方法以 base64 格式来返回图像数据，然后嵌入到 <code>img</code> 标签的 <code>src</code> 属性以展示图像。</p>
-<h1 id="并行请求"><a href="#并行请求" class="headerlink" title="并行请求"></a>并行请求</h1><p>为同时发送多个请求，Axios 提供了<code>axios.all()</code>方法。只要传递一个请求数组到这个方法，再使用 <code>axios.spread()</code> 来将响应数组的属性指定到不同的变量：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios</span><br><span class="line">  .all([</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">  ])</span><br><span class="line">  .then(</span><br><span class="line">    axios.spread(<span class="function">(<span class="params">obj1, obj2</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// Both requests are now complete</span></span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj1.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj1.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj2.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj2.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
-<p>你可以通过内置的 <code>Promise.all()</code> 方法来实现相同的结果。将 fetch 请求作为数组传递给 <code>Promise.all()</code>。然后，通过 <code>async</code> 函数处理响应，如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.all([</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">])</span><br><span class="line">  .then(<span class="keyword">async</span> ([res1, res2]) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> a = <span class="keyword">await</span> res1.json();</span><br><span class="line">    <span class="keyword">const</span> b = <span class="keyword">await</span> res2.json();</span><br><span class="line">    <span class="built_in">console</span>.log(a.login + <span class="string">" has "</span> + a.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(b.login + <span class="string">" has "</span> + b.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>Axios 在紧密的包装中为大多数的 HTTP 通信提供了易于使用的的 API。但是，如果你更喜欢坚持原生 API，那就没什么能够阻挡你实现 Axios 的特性的。</p>
-<p>如文中讨论的，我们在使用浏览器提供的 <code>fetch()</code> 方法时完全有能力复现 Axios 的关键特性。最后，是否值得加载一个客户端 HTTP API 取决于你是否能舒服的使用内置 API 工作。</p>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>前端</category>
-      </categories>
-      <tags>
-        <tag>翻译</tag>
-        <tag>JavaScript</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令行实战：谁动了我的奶酪</title>
-    <url>/posts/git-who-moved-my-cheese.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/boat-in-sky.jpg!thumbnail" alt="题图"></p>
-<p>工作中遇到了这样一个场景：突然发现自己写的一段代码被人改过，想看看到底是谁改的，改了啥。</p>
-<p>本文就基于以上这样一个场景预设介绍一系列相关的Git命令。</p>
-<a id="more"></a>
-<div class="note info"><p>首先，需要确认一下代码是真的被同事改动了，还是自己脑子瓦特了。</p></div>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git blame -L start,end filename</span><br></pre></td></tr></table></figure>
-<ul>
-<li>start: 代码片段起始行号</li>
-<li>end: 代码片段结尾行号</li>
-<li>filename: 文件路径</li>
-</ul>
-<p>该命令会显示代码段中每一行的最后一次提交信息，包括提交的SHA1、时间、作者。</p>
-<p>输出示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">9366598e (nelson 2018-12-26 15:34:54 +0800 48)   componentDidMount() &#123;</span><br><span class="line">f07595e2 (kenny  2019-01-04 12:41:28 +0800 49)     const &#123; schema, params &#125; = this.props;</span><br><span class="line">febe3a3b (kenny  2019-01-04 16:50:46 +0800 50)     AppActions.getGeneralOptions(schema, params);</span><br><span class="line">9366598e (nelson 2018-12-26 15:34:54 +0800 51)   &#125;</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>仔细一看，果然有猫腻，中间有两行在1月4日被人改过。</p></div>
-<p><code>git blame</code> 只能看到谁在什么时间做了改动，至于具体每次提交改了啥，还得求助于 <code>git log</code> 命令来查看：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git log -L start,end:filename</span><br></pre></td></tr></table></figure>
-<ul>
-<li>start: 代码片段起始行号</li>
-<li>end: 代码片段结尾行号</li>
-<li>filename: 文件路径</li>
-</ul>
-<p>该命令会输出代码段中最近几次改动的diff详情。</p>
-<p>输出示例：</p>
-<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">commit febe3a3b52f1603e176eca0392a7c90df781d41e                                </span><br><span class="line">Author: kenny &lt;example@gmail.com&gt;                                              </span><br><span class="line">Date:   Fri Jan 4 16:50:46 2019 +0800                                          </span><br><span class="line"></span><br><span class="line">    commit message</span><br><span class="line"></span><br><span class="line">diff --git a/src/components/Select/GeneralSelect.jsx b/src/components/Select/GeneralSelect.jsx</span><br><span class="line"><span class="comment">--- a/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line"><span class="comment">+++ b/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line">@@ -48,10 +48,4 @@                                                    </span><br><span class="line">   componentDidMount() &#123;                                                       </span><br><span class="line">     const &#123; schema, params &#125; = this.props;                                     </span><br><span class="line"><span class="deletion">-</span></span><br><span class="line"><span class="deletion">-    if( !this.state.Options?.[schema] ) &#123;</span></span><br><span class="line"><span class="deletion">-      AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line"><span class="deletion">-    &#125; else &#123;</span></span><br><span class="line"><span class="deletion">-      this.getOptionCallback(this.state.Options[schema])</span></span><br><span class="line"><span class="deletion">-    &#125;</span></span><br><span class="line"><span class="deletion">-</span></span><br><span class="line"><span class="addition">+    AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>一波分析，没能猜透同事的改动意图，然后就需要跟同事正面沟通一下了。沟通结果无非就两种，要么你被他说服了，这事儿就算过了，要么他被你说服了，然后你就会遇到一个新的问题：怎么回滚历史提交中更改的代码块。我们接着往下看。</p></div>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git reset  (--patch | -p) tree-ish filename</span><br></pre></td></tr></table></figure>
-<ul>
-<li>tree-ish: 提交的SHA1标识</li>
-<li>filename: 文件路径</li>
-</ul>
-<p>关于该命令，官方文档 <a href="https://git-scm.com/docs/git-reset#git-reset-emgitresetem--patch-plttree-ishgt--ltpathsgt82308203" target="_blank" rel="noopener">Git Documentation: Git Reset</a> 中描述如下：</p>
-<blockquote>
-<p>Interactively select hunks in the difference between the index and <tree-ish> (defaults to HEAD). The chosen hunks are applied in reverse to the index.</tree-ish></p>
-</blockquote>
-<p>也即，该命令会比较缓存区（Index）和所指定提交（此处手动埋伏笔）之间的差异，并交互式的让用户选择代码区块并应用到缓存区（Index）中。</p>
-<p>这里要注意两点：</p>
-<ol>
-<li>什么叫交互式的？</li>
-<li>应用到 <strong>缓存区（Index）</strong>。</li>
-</ol>
-<p>首先来看第一点，什么叫交互式的？</p>
-<p>我们来看以上命令的输出示例：</p>
-<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">diff --git b/src/components/Select/GeneralSelect.jsx a/src/components/Select/GeneralSelect.jsx</span><br><span class="line">index b1bf5ca..73cd634 100644</span><br><span class="line"><span class="comment">--- b/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line"><span class="comment">+++ a/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line">@@ -47,7 +47,13 @@ class GeneralSelect extends Reflux.Component &#123;</span><br><span class="line"></span><br><span class="line">   componentDidMount() &#123;</span><br><span class="line">     const &#123; schema, params &#125; = this.props;</span><br><span class="line"><span class="deletion">-    AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+    if( !this.state.Options?.[schema] ) &#123;</span></span><br><span class="line"><span class="addition">+      AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line"><span class="addition">+    &#125; else &#123;</span></span><br><span class="line"><span class="addition">+      this.getOptionCallback(this.state.Options[schema])</span></span><br><span class="line"><span class="addition">+    &#125;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">Apply this hunk to index [y,n,q,a,d,/,e,?]?</span><br></pre></td></tr></table></figure>
-<p>注意最后一行，命令并没有直接结束执行，而是等待用户的输入指示。此处提供了一堆可选项的缩写，如果看不懂直接输入 <code>?</code> 将会输出命令提示：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">y - apply this hunk to index</span><br><span class="line">n - do not apply this hunk to index</span><br><span class="line">q - quit; do not apply this hunk or any of the remaining ones</span><br><span class="line">a - apply this hunk and all later hunks in the file</span><br><span class="line">d - do not apply this hunk or any of the later hunks in the file</span><br><span class="line">g - select a hunk to go to</span><br><span class="line">/ - search for a hunk matching the given regex</span><br><span class="line">j - leave this hunk undecided, see next undecided hunk</span><br><span class="line">J - leave this hunk undecided, see next hunk</span><br><span class="line">k - leave this hunk undecided, see previous undecided hunk</span><br><span class="line">K - leave this hunk undecided, see previous hunk</span><br><span class="line">s - split the current hunk into smaller hunks</span><br><span class="line">e - manually edit the current hunk</span><br><span class="line">? - print help</span><br></pre></td></tr></table></figure>
-<p>如果是整个代码段都要回滚，直接输入 <code>y</code> 即可，如果要回滚代码段中的指定几行，就要输入 <code>e</code> 进入vim环境下的手动编辑模式了，输出示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Manual hunk edit mode -- see bottom for a quick guide.</span><br><span class="line">@@ -47,7 +47,13 @@ class GeneralSelect extends Reflux.Component &#123;</span><br><span class="line"></span><br><span class="line">   componentDidMount() &#123;</span><br><span class="line">     const &#123; schema, params &#125; = this.props;</span><br><span class="line">-    AppActions.getGeneralOptions(schema, params);</span><br><span class="line">+</span><br><span class="line">+    if( !this.state.Options?.[schema] ) &#123;</span><br><span class="line">+      AppActions.getGeneralOptions(schema, params);</span><br><span class="line">+    &#125; else &#123;</span><br><span class="line">+      this.getOptionCallback(this.state.Options[schema])</span><br><span class="line">+    &#125;</span><br><span class="line">+</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># ---</span><br><span class="line"># To remove &apos;-&apos; lines, make them &apos; &apos; lines (context).</span><br><span class="line"># To remove &apos;+&apos; lines, delete them.</span><br><span class="line"># Lines starting with # will be removed.</span><br><span class="line">#</span><br><span class="line"># If the patch applies cleanly, the edited hunk will immediately be</span><br><span class="line"># marked for applying.</span><br><span class="line"># If it does not apply cleanly, you will be given an opportunity to</span><br><span class="line"># edit again.  If all lines of the hunk are removed, then the edit is</span><br><span class="line"># aborted and the hunk is left unchanged.</span><br></pre></td></tr></table></figure>
-<p>在这里只给出了部分的修改方法提示，但并不够完善，更详细的说明可以参考官方文档 <a href="https://git-scm.com/docs/git-add#_editing_patches" target="_blank" rel="noopener">Git Documentation: EDITING PATCHES</a>。</p>
-<p>我们知道，在Git Diff的输出结果中：</p>
-<ul>
-<li>“-”开头表示被删除的行；</li>
-<li>“+”开头表示新增的行；</li>
-<li>两行内容相邻又相似，第一行以 “-” 开头，第二行以 “+” 开头，表示该行发生过修改。可以理解为上面两种情况结合所衍生出的深层意义。</li>
-</ul>
-<p>那么在手动编辑模式中如何阻止相应修改状态的回滚呢？对应如下：</p>
-<ul>
-<li>取消回滚中的删除行：将 “-“ 改为“  ”（空格）；</li>
-<li>取消回滚中的新增行：删除掉 “+” 开头的行，或在 “+” 前添加 “#” 符号注释掉。</li>
-<li>取消回滚中的修改行：将 “-” 改为“  ”（空格），并删除掉 “+” 开头的行（上面两种操作的结合）。</li>
-</ul>
-<p>更进一步的，如果想要在Diff范围之外进行额外的改动怎么办？</p>
-<ul>
-<li>删除行：将行前的“ ”（空格）改为 “-”;</li>
-<li>新增行：在新增的行前添加 “+”;</li>
-<li>修改行：将原行前的“ ”（空格）改为 “-”，并在其后新增以 “+” 开头的行输入更改后的行内容。</li>
-</ul>
-<p>改完之后退出编辑模式，如果修改成功会直接结束命令，如果输入错误导致修改失败会提示你重新进入编辑模式或放弃回滚区块的编辑。</p>
-<p>以上就是代码回滚时的交互式修改。</p>
-<p>假设你回滚了代码块，然后在IDE中打开文件，发现并没有看到刚才回滚的代码块，出了什么问题呢？</p>
-<p>此时就要提到我们上文所说的第二点了：<strong>回滚应用到了缓存区（Index），而不是工作区（Working dir）</strong>。</p>
-<p>也就是说，<code>git reset -p</code> 命令并没有改变工作区，工作目录里还是原来的样子，这时如果 <code>git add</code> 从工作目录提交改动到 Index，很容易就会将之前回滚的更改又覆盖掉了。如果想要将代码回滚到工作区，还需要将代码从缓存区（Index）检出：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git checkout filename</span><br></pre></td></tr></table></figure>
-<p>至此即可完整将历史提交中的某段代码改动回滚到当前工作目录下了。</p>
-<div class="note info"><p>插个题外话，还记不记得我们在一开始的时候手动埋下的那个伏笔，我们现在来聊聊获得指定提交的这个过程。</p></div>
-<p>一般情况下，我们会使用 <code>git log -L</code> 命令来找到对应代码块是在哪一个提交中被改动的，比如说提交 <code>febe3a3</code> 中。但是这个提交中的文件内容是已经更改过的了，我们需要回滚的对象应该是这个提交的父级，也就是 <code>febe3a3^</code>，对应的命令也就是：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git reset -p febe3a3^ filename</span><br></pre></td></tr></table></figure>
-<p>执行命令后，命令行输出 No changes. 哪里出了问题呢？</p>
-<p>后来在 <a href="https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection" target="_blank" rel="noopener">Git Documentation: Revision Selection</a> 中发现了这样一行小提示：</p>
-<blockquote>
-<p>On Windows in cmd.exe, ^ is a special character and needs to be treated differently. You can either double it or put the commit reference in quotes.</p>
-</blockquote>
-<p>也就是说，Windows 命令行中 <code>^</code> 是特殊字符，可以通过写两边或者用引号引起来来做特殊处理：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git show HEAD^     # 无效</span><br><span class="line">$ git show HEAD^^    # 有效</span><br><span class="line">$ git show &quot;HEAD^&quot;   # 有效</span><br></pre></td></tr></table></figure>
-<p>另外，也可以用 <code>febe3a3~</code> 指代父提交。<code>~</code> 和 <code>^</code> 只在有多个父提交的时候有差别，如合并提交的父提交，关于两者的差别后续会有专门篇幅讲到。</p>
-<div class="reference-linking">参考链接</div>
-
-<ul>
-<li><a href="https://git-scm.com/docs/git-reset#git-reset-emgitresetem--patch-plttree-ishgt--ltpathsgt82308203" target="_blank" rel="noopener">Git Documentation: Git Reset</a></li>
-<li><a href="https://git-scm.com/docs/git-add#_editing_patches" target="_blank" rel="noopener">Git Documentation: EDITING PATCHES</a></li>
-<li><a href="https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection" target="_blank" rel="noopener">Git Documentation: Revision Selection</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>Git</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hexo搭建个人博客系列：进阶设置篇</title>
     <url>/posts/hexo-advanced-settings.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/snow-mountain.jpg!thumbnail" alt="题图" title="Photo by Przemyslaw Kruk"></p>
@@ -1150,6 +1048,110 @@
       </categories>
       <tags>
         <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令行实战：谁动了我的奶酪</title>
+    <url>/posts/git-who-moved-my-cheese.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/boat-in-sky.jpg!thumbnail" alt="题图"></p>
+<p>工作中遇到了这样一个场景：突然发现自己写的一段代码被人改过，想看看到底是谁改的，改了啥。</p>
+<p>本文就基于以上这样一个场景预设介绍一系列相关的Git命令。</p>
+<a id="more"></a>
+<div class="note info"><p>首先，需要确认一下代码是真的被同事改动了，还是自己脑子瓦特了。</p></div>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git blame -L start,end filename</span><br></pre></td></tr></table></figure>
+<ul>
+<li>start: 代码片段起始行号</li>
+<li>end: 代码片段结尾行号</li>
+<li>filename: 文件路径</li>
+</ul>
+<p>该命令会显示代码段中每一行的最后一次提交信息，包括提交的SHA1、时间、作者。</p>
+<p>输出示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">9366598e (nelson 2018-12-26 15:34:54 +0800 48)   componentDidMount() &#123;</span><br><span class="line">f07595e2 (kenny  2019-01-04 12:41:28 +0800 49)     const &#123; schema, params &#125; = this.props;</span><br><span class="line">febe3a3b (kenny  2019-01-04 16:50:46 +0800 50)     AppActions.getGeneralOptions(schema, params);</span><br><span class="line">9366598e (nelson 2018-12-26 15:34:54 +0800 51)   &#125;</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>仔细一看，果然有猫腻，中间有两行在1月4日被人改过。</p></div>
+<p><code>git blame</code> 只能看到谁在什么时间做了改动，至于具体每次提交改了啥，还得求助于 <code>git log</code> 命令来查看：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git log -L start,end:filename</span><br></pre></td></tr></table></figure>
+<ul>
+<li>start: 代码片段起始行号</li>
+<li>end: 代码片段结尾行号</li>
+<li>filename: 文件路径</li>
+</ul>
+<p>该命令会输出代码段中最近几次改动的diff详情。</p>
+<p>输出示例：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">commit febe3a3b52f1603e176eca0392a7c90df781d41e                                </span><br><span class="line">Author: kenny &lt;example@gmail.com&gt;                                              </span><br><span class="line">Date:   Fri Jan 4 16:50:46 2019 +0800                                          </span><br><span class="line"></span><br><span class="line">    commit message</span><br><span class="line"></span><br><span class="line">diff --git a/src/components/Select/GeneralSelect.jsx b/src/components/Select/GeneralSelect.jsx</span><br><span class="line"><span class="comment">--- a/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line"><span class="comment">+++ b/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line">@@ -48,10 +48,4 @@                                                    </span><br><span class="line">   componentDidMount() &#123;                                                       </span><br><span class="line">     const &#123; schema, params &#125; = this.props;                                     </span><br><span class="line"><span class="deletion">-</span></span><br><span class="line"><span class="deletion">-    if( !this.state.Options?.[schema] ) &#123;</span></span><br><span class="line"><span class="deletion">-      AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line"><span class="deletion">-    &#125; else &#123;</span></span><br><span class="line"><span class="deletion">-      this.getOptionCallback(this.state.Options[schema])</span></span><br><span class="line"><span class="deletion">-    &#125;</span></span><br><span class="line"><span class="deletion">-</span></span><br><span class="line"><span class="addition">+    AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>一波分析，没能猜透同事的改动意图，然后就需要跟同事正面沟通一下了。沟通结果无非就两种，要么你被他说服了，这事儿就算过了，要么他被你说服了，然后你就会遇到一个新的问题：怎么回滚历史提交中更改的代码块。我们接着往下看。</p></div>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git reset  (--patch | -p) tree-ish filename</span><br></pre></td></tr></table></figure>
+<ul>
+<li>tree-ish: 提交的SHA1标识</li>
+<li>filename: 文件路径</li>
+</ul>
+<p>关于该命令，官方文档 <a href="https://git-scm.com/docs/git-reset#git-reset-emgitresetem--patch-plttree-ishgt--ltpathsgt82308203" target="_blank" rel="noopener">Git Documentation: Git Reset</a> 中描述如下：</p>
+<blockquote>
+<p>Interactively select hunks in the difference between the index and <tree-ish> (defaults to HEAD). The chosen hunks are applied in reverse to the index.</tree-ish></p>
+</blockquote>
+<p>也即，该命令会比较缓存区（Index）和所指定提交（此处手动埋伏笔）之间的差异，并交互式的让用户选择代码区块并应用到缓存区（Index）中。</p>
+<p>这里要注意两点：</p>
+<ol>
+<li>什么叫交互式的？</li>
+<li>应用到 <strong>缓存区（Index）</strong>。</li>
+</ol>
+<p>首先来看第一点，什么叫交互式的？</p>
+<p>我们来看以上命令的输出示例：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">diff --git b/src/components/Select/GeneralSelect.jsx a/src/components/Select/GeneralSelect.jsx</span><br><span class="line">index b1bf5ca..73cd634 100644</span><br><span class="line"><span class="comment">--- b/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line"><span class="comment">+++ a/src/components/Select/GeneralSelect.jsx</span></span><br><span class="line">@@ -47,7 +47,13 @@ class GeneralSelect extends Reflux.Component &#123;</span><br><span class="line"></span><br><span class="line">   componentDidMount() &#123;</span><br><span class="line">     const &#123; schema, params &#125; = this.props;</span><br><span class="line"><span class="deletion">-    AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line"><span class="addition">+    if( !this.state.Options?.[schema] ) &#123;</span></span><br><span class="line"><span class="addition">+      AppActions.getGeneralOptions(schema, params);</span></span><br><span class="line"><span class="addition">+    &#125; else &#123;</span></span><br><span class="line"><span class="addition">+      this.getOptionCallback(this.state.Options[schema])</span></span><br><span class="line"><span class="addition">+    &#125;</span></span><br><span class="line"><span class="addition">+</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">Apply this hunk to index [y,n,q,a,d,/,e,?]?</span><br></pre></td></tr></table></figure>
+<p>注意最后一行，命令并没有直接结束执行，而是等待用户的输入指示。此处提供了一堆可选项的缩写，如果看不懂直接输入 <code>?</code> 将会输出命令提示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">y - apply this hunk to index</span><br><span class="line">n - do not apply this hunk to index</span><br><span class="line">q - quit; do not apply this hunk or any of the remaining ones</span><br><span class="line">a - apply this hunk and all later hunks in the file</span><br><span class="line">d - do not apply this hunk or any of the later hunks in the file</span><br><span class="line">g - select a hunk to go to</span><br><span class="line">/ - search for a hunk matching the given regex</span><br><span class="line">j - leave this hunk undecided, see next undecided hunk</span><br><span class="line">J - leave this hunk undecided, see next hunk</span><br><span class="line">k - leave this hunk undecided, see previous undecided hunk</span><br><span class="line">K - leave this hunk undecided, see previous hunk</span><br><span class="line">s - split the current hunk into smaller hunks</span><br><span class="line">e - manually edit the current hunk</span><br><span class="line">? - print help</span><br></pre></td></tr></table></figure>
+<p>如果是整个代码段都要回滚，直接输入 <code>y</code> 即可，如果要回滚代码段中的指定几行，就要输入 <code>e</code> 进入vim环境下的手动编辑模式了，输出示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Manual hunk edit mode -- see bottom for a quick guide.</span><br><span class="line">@@ -47,7 +47,13 @@ class GeneralSelect extends Reflux.Component &#123;</span><br><span class="line"></span><br><span class="line">   componentDidMount() &#123;</span><br><span class="line">     const &#123; schema, params &#125; = this.props;</span><br><span class="line">-    AppActions.getGeneralOptions(schema, params);</span><br><span class="line">+</span><br><span class="line">+    if( !this.state.Options?.[schema] ) &#123;</span><br><span class="line">+      AppActions.getGeneralOptions(schema, params);</span><br><span class="line">+    &#125; else &#123;</span><br><span class="line">+      this.getOptionCallback(this.state.Options[schema])</span><br><span class="line">+    &#125;</span><br><span class="line">+</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># ---</span><br><span class="line"># To remove &apos;-&apos; lines, make them &apos; &apos; lines (context).</span><br><span class="line"># To remove &apos;+&apos; lines, delete them.</span><br><span class="line"># Lines starting with # will be removed.</span><br><span class="line">#</span><br><span class="line"># If the patch applies cleanly, the edited hunk will immediately be</span><br><span class="line"># marked for applying.</span><br><span class="line"># If it does not apply cleanly, you will be given an opportunity to</span><br><span class="line"># edit again.  If all lines of the hunk are removed, then the edit is</span><br><span class="line"># aborted and the hunk is left unchanged.</span><br></pre></td></tr></table></figure>
+<p>在这里只给出了部分的修改方法提示，但并不够完善，更详细的说明可以参考官方文档 <a href="https://git-scm.com/docs/git-add#_editing_patches" target="_blank" rel="noopener">Git Documentation: EDITING PATCHES</a>。</p>
+<p>我们知道，在Git Diff的输出结果中：</p>
+<ul>
+<li>“-”开头表示被删除的行；</li>
+<li>“+”开头表示新增的行；</li>
+<li>两行内容相邻又相似，第一行以 “-” 开头，第二行以 “+” 开头，表示该行发生过修改。可以理解为上面两种情况结合所衍生出的深层意义。</li>
+</ul>
+<p>那么在手动编辑模式中如何阻止相应修改状态的回滚呢？对应如下：</p>
+<ul>
+<li>取消回滚中的删除行：将 “-“ 改为“  ”（空格）；</li>
+<li>取消回滚中的新增行：删除掉 “+” 开头的行，或在 “+” 前添加 “#” 符号注释掉。</li>
+<li>取消回滚中的修改行：将 “-” 改为“  ”（空格），并删除掉 “+” 开头的行（上面两种操作的结合）。</li>
+</ul>
+<p>更进一步的，如果想要在Diff范围之外进行额外的改动怎么办？</p>
+<ul>
+<li>删除行：将行前的“ ”（空格）改为 “-”;</li>
+<li>新增行：在新增的行前添加 “+”;</li>
+<li>修改行：将原行前的“ ”（空格）改为 “-”，并在其后新增以 “+” 开头的行输入更改后的行内容。</li>
+</ul>
+<p>改完之后退出编辑模式，如果修改成功会直接结束命令，如果输入错误导致修改失败会提示你重新进入编辑模式或放弃回滚区块的编辑。</p>
+<p>以上就是代码回滚时的交互式修改。</p>
+<p>假设你回滚了代码块，然后在IDE中打开文件，发现并没有看到刚才回滚的代码块，出了什么问题呢？</p>
+<p>此时就要提到我们上文所说的第二点了：<strong>回滚应用到了缓存区（Index），而不是工作区（Working dir）</strong>。</p>
+<p>也就是说，<code>git reset -p</code> 命令并没有改变工作区，工作目录里还是原来的样子，这时如果 <code>git add</code> 从工作目录提交改动到 Index，很容易就会将之前回滚的更改又覆盖掉了。如果想要将代码回滚到工作区，还需要将代码从缓存区（Index）检出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git checkout filename</span><br></pre></td></tr></table></figure>
+<p>至此即可完整将历史提交中的某段代码改动回滚到当前工作目录下了。</p>
+<div class="note info"><p>插个题外话，还记不记得我们在一开始的时候手动埋下的那个伏笔，我们现在来聊聊获得指定提交的这个过程。</p></div>
+<p>一般情况下，我们会使用 <code>git log -L</code> 命令来找到对应代码块是在哪一个提交中被改动的，比如说提交 <code>febe3a3</code> 中。但是这个提交中的文件内容是已经更改过的了，我们需要回滚的对象应该是这个提交的父级，也就是 <code>febe3a3^</code>，对应的命令也就是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git reset -p febe3a3^ filename</span><br></pre></td></tr></table></figure>
+<p>执行命令后，命令行输出 No changes. 哪里出了问题呢？</p>
+<p>后来在 <a href="https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection" target="_blank" rel="noopener">Git Documentation: Revision Selection</a> 中发现了这样一行小提示：</p>
+<blockquote>
+<p>On Windows in cmd.exe, ^ is a special character and needs to be treated differently. You can either double it or put the commit reference in quotes.</p>
+</blockquote>
+<p>也就是说，Windows 命令行中 <code>^</code> 是特殊字符，可以通过写两边或者用引号引起来来做特殊处理：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git show HEAD^     # 无效</span><br><span class="line">$ git show HEAD^^    # 有效</span><br><span class="line">$ git show &quot;HEAD^&quot;   # 有效</span><br></pre></td></tr></table></figure>
+<p>另外，也可以用 <code>febe3a3~</code> 指代父提交。<code>~</code> 和 <code>^</code> 只在有多个父提交的时候有差别，如合并提交的父提交，关于两者的差别后续会有专门篇幅讲到。</p>
+<div class="reference-linking">参考链接</div>
+
+<ul>
+<li><a href="https://git-scm.com/docs/git-reset#git-reset-emgitresetem--patch-plttree-ishgt--ltpathsgt82308203" target="_blank" rel="noopener">Git Documentation: Git Reset</a></li>
+<li><a href="https://git-scm.com/docs/git-add#_editing_patches" target="_blank" rel="noopener">Git Documentation: EDITING PATCHES</a></li>
+<li><a href="https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection" target="_blank" rel="noopener">Git Documentation: Revision Selection</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -2005,12 +2007,12 @@ Bored</p>
 </ul>
 <p>示例效果如下：</p>
 
-        <div id="aplayer-jmvErKxG" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
+        <div id="aplayer-saerkZRc" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
             <pre class="aplayer-lrc-content"></pre>
         </div>
         <script>
           var ap = new APlayer({
-            element: document.getElementById("aplayer-jmvErKxG"),
+            element: document.getElementById("aplayer-saerkZRc"),
             narrow: false,
             autoplay: false,
             showlrc: 3,
