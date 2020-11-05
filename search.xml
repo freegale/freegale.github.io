@@ -91,67 +91,76 @@
       </tags>
   </entry>
   <entry>
-    <title>「译」axios和fetch，我们应该用哪个？</title>
-    <url>/posts/axios-or-fetch-api.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="note info"><p>原文链接： <a href="https://blog.logrocket.com/axios-or-fetch-api/" target="_blank" rel="noopener">Axios or fetch(): Which should you use?</a></p></div>
-<p>Axios 一直是我开发项目时发送 HTTP 请求的首选。最近看到一篇外文博客里，详细介绍了如何在使用 fetch 的时候实现 Axios 的一些关键特性，以使我们能够方便的过渡到 fetch 这一原生 API 上。</p>
+    <title>Defects when setting up my blog</title>
+    <url>/posts/Defects-when-setting-up-my-blog.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>今天在搭建博客的过程中间，大概遇到了这么些坑，唉：</p>
+<ol>
+<li><p>安装<code>node</code>，听说要让电脑上实现多版本管理，所以就要安装<code>nvm</code>，要安装<code>nvm</code>，就要用<code>curl</code> balabala命令，结果遇到了connect refuse异常，需要配置<code>/etc/hosts</code>文件，也就是下面这样</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 在hosts文件末尾添加</span><br><span class="line">199.232.68.133 raw.githubusercontent.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在配置好hosts文件之后，发现nvm安装巨慢无比，于是搜索发现需要修改<code>install.sh</code>文件，替换成清华或者中科院或者淘宝的源。于是进行替换，替换完成后顺利安装nvm。</p>
+</li>
+</ol>
 <a id="more"></a>
-<hr>
-<p>在我最近的一篇文章 <a href="https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/#new_tab" target="_blank" rel="noopener">如何像一个老手一样通过 Axios 发送 HTTP 请求</a> 中，我讨论了使用 Axios 的好处。然而 Axios 并非总是理想的解决方案，有时还有其他更好的做法来发送 HTTP 请求。</p>
-<p>毫无疑问，由于更易使用，一些开发者更喜欢 Axios 而非原生的内置 API。但也有很多人高估了这个库的必要性。<code>fecth()</code> API 能够完美复现 Axios 的关键特性，并且它还有一个额外的优点：已内置在所有现代浏览器里。</p>
-<h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><p>在我们进一步深入 Axios 的更多高级特性之前，我们先来比较一下它和 <code>fetch()</code> 的基本语法。这里展示了你该如何通过 Axios 发送一个带有自定义头部信息的 POST 请求到一个 URL 地址。Axios 将会帮你自动把响应数据转成 JSON 格式。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  url: <span class="string">"http://localhost/test.htm"</span>,</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">axios(options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>现在我们将这份代码与 <code>fetch()</code> 版本的代码比较一下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fetch()</span></span><br><span class="line"><span class="keyword">const</span> url = <span class="string">"http://localhost/test.htm"</span>;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">fetch(url, options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>注意：</p>
-<ul>
-<li>为发送数据，<code>fetch()</code> 使用的是 body 属性，而 Axios 使用的是 data 属性</li>
-<li><code>fetch()</code> 中的数据需要处理为字符串</li>
-<li>在 <code>fetch()</code> 中， URL 是作为一个参数传递的，然而在 Axios 中，URL 是被放在 options 对象中传入的</li>
-</ul>
-<h1 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h1><p>Axios 的一个主要卖点即是它广泛的浏览器兼容性，即使是如 IE11 这样的老浏览器也能正常运行 Axios。另一方面，<code>fetch()</code> 只支持 Chrome 42+, FireFox 39+, Edge 14+ 以及 Safari 10.1+。（你可以在 <a href="https://caniuse.com/#search=Fetch" target="_blank" rel="noopener">Can I use</a> 里查看完整的兼容性表）</p>
-<p>如何向后兼容性是你使用 Axios 的唯一理由，那其实你不是真的需要一个 HTTP 库。作为替代，你可以在不支持 <code>fetch()</code> 的浏览器上使用 <a href="https://github.com/github/fetch" target="_blank" rel="noopener">这样</a> 的 polyfill 以实现类似的功能。要开始使用这样的 fetch polyfill，通过 npm 命令安装它：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install whatwg-fetch --save</span><br></pre></td></tr></table></figure>
-<p>然后你可以像这样发送请求：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &apos;whatwg-fetch&apos;</span><br><span class="line">window.fetch(...)</span><br></pre></td></tr></table></figure>
-<p>记住，在老式浏览器上你可能还需要一个 promise 的 polyfill。</p>
-<h1 id="响应超时"><a href="#响应超时" class="headerlink" title="响应超时"></a>响应超时</h1><p>在 Axios 中设置响应超时很简单，这也成为了开发者选择它的另外一个原因。你可以在配置对象中设置 <code>timeout</code> 属性以设置请求终止的毫秒数，例如：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  method: <span class="string">"post"</span>,</span><br><span class="line">  url: <span class="string">"/login"</span>,</span><br><span class="line">  timeout: <span class="number">4000</span>, <span class="comment">// 4 seconds timeout</span></span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
-<p><code>fetch()</code> 通过 <code>AbortController</code> 接口来提供类似的功能。虽然不如 Axios 来的那么简单：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> controller = <span class="keyword">new</span> AbortController();</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  signal: controller.signal,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> promise = fetch(<span class="string">"/login"</span>, options);</span><br><span class="line"><span class="keyword">const</span> timeoutId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> controller.abort(), <span class="number">4000</span>);</span><br><span class="line"></span><br><span class="line">promise</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
-<p>这里，我们通过 <code>AbortController.AbortController()</code> 构造函数创建一个 <code>AbortController</code>，之后我们将用这个对象取消请求。<code>signal</code> 是 <code>AbortController</code> 的一个只读属性，提供了与请求通信或取消的方法。如果服务器在 4 秒内没有响应，<code>controller.abort()</code> 就会被调用，然后通信操作会被终止。</p>
-<h1 id="自动-JSON-数据转换"><a href="#自动-JSON-数据转换" class="headerlink" title="自动 JSON 数据转换"></a>自动 JSON 数据转换</h1><p>正如我们之前说过的，Axios 在发送请求的时候会自动将数据字符串化（尽管你也可以覆写默认的行为来定义一个不同的转换机制）。但当使用 <code>fetch()</code> 的时候，你需要手动做这个事。比较一下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/orgs/axios"</span>).then(</span><br><span class="line">  response =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(response.data);</span><br><span class="line">  &#125;,</span><br><span class="line">  error =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fetch()</span></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json()) <span class="comment">// one extra step</span></span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(error));</span><br></pre></td></tr></table></figure>
-<p>数据自动转换是一个不错的功能，但再一次的，这并不是什么你在 <code>fetch()</code> 里做不了的东西。</p>
-<h1 id="HTTP-拦截器"><a href="#HTTP-拦截器" class="headerlink" title="HTTP 拦截器"></a>HTTP 拦截器</h1><p>Axios 的一个关键特性即是它拦截 HTTP 请求的能力。HTTP 拦截器在你需要测试或改变从你的应用到服务器（反之亦然）的 HTTP 请求的时候派得上用场（例如，日志、权限认证等）。有了拦截器，你不再需要为每个 HTTP 请求写单独的代码。</p>
-<p>这里展示了你该如何在 Axios 里生命一个请求拦截器：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.interceptors.request.use(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// log a message before any HTTP request is sent</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sent a GET request</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/users/sideshowbarker"</span>).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>在这里，<code>axios.interceptors.request.use()</code> 方法用来定义一段在 HTTP 请求发送之前的代码逻辑。</p>
-<p>默认情况下，<code>fetch()</code> 并没有提供一个拦截 HTTP 的方法，但是想出一个变通的办法并不难。你可以像这样覆写全局的 fetch 方法来定义一个你自己的拦截器：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fetch = (<span class="function"><span class="params">originalFetch</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...<span class="built_in">arguments</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = originalFetch.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">return</span> result.then(<span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>));</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)(fetch);</span><br><span class="line"></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="下载进度"><a href="#下载进度" class="headerlink" title="下载进度"></a>下载进度</h1><p>进度指示器在下载大型资源的时候非常有用，尤其是那些网速较慢的用户。以前，JavaScript 开发者使用<code>XMLHttpRequest.onprogress</code>回调处理器来实现进度指示器。</p>
-<p><a href="https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/" target="_blank" rel="noopener">Fetch API</a> 没有 <code>onprogress</code> 处理器。取而代之的是，它通过响应对象的 body 属性提供了一个<code>ReadableStream</code>的实例。</p>
-<p>下面的例子展示了通过使用 <code>ReadableStream</code> 来为用户在图像下载过程中提供即时反馈：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// original code: https://github.com/AnthumChris/fetch-progress-indicators</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"progress"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span>progress<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="meta">  "use strict"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> element = <span class="built_in">document</span>.getElementById(<span class="string">"progress"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  fetch(<span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>)</span></span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line">      if (!response.ok) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(response.status + <span class="string">" "</span> + response.statusText);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure ReadableStream is supported</span></span></span><br><span class="line">      if (!response.body) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"ReadableStream not yet supported in this browser."</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// store the size of the entity-body, in bytes</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> contentLength = response.headers.get(<span class="string">"content-length"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure contentLength is available</span></span></span><br><span class="line">      if (!contentLength) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"Content-Length response header unavailable"</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// parse the integer into a base-10 number</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> total = <span class="built_in">parseInt</span>(contentLength, <span class="number">10</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> loaded = <span class="number">0</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="keyword">new</span> Response(</span></span><br><span class="line"><span class="javascript">        <span class="comment">// create and return a readable stream</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> ReadableStream(&#123;</span></span><br><span class="line">          start(controller) &#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">const</span> reader = response.body.getReader();</span></span><br><span class="line"></span><br><span class="line">            read();</span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line">              reader</span><br><span class="line">                .read()</span><br><span class="line"><span class="javascript">                .then(<span class="function">(<span class="params">&#123; done, value &#125;</span>) =&gt;</span> &#123;</span></span><br><span class="line">                  if (done) &#123;</span><br><span class="line">                    controller.close();</span><br><span class="line"><span class="javascript">                    <span class="keyword">return</span>;</span></span><br><span class="line">                  &#125;</span><br><span class="line">                  loaded += value.byteLength;</span><br><span class="line">                  progress(&#123; loaded, total &#125;);</span><br><span class="line">                  controller.enqueue(value);</span><br><span class="line">                  read();</span><br><span class="line">                &#125;)</span><br><span class="line"><span class="javascript">                .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">                  <span class="built_in">console</span>.error(error);</span></span><br><span class="line">                  controller.error(error);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span></span></span><br><span class="line"><span class="javascript">      <span class="comment">// construct a blob from the data</span></span></span><br><span class="line">      response.blob()</span><br><span class="line">    )</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// insert the downloaded image into the page</span></span></span><br><span class="line"><span class="javascript">      <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).src = URL.createObjectURL(data);</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.error(error);</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">progress</span>(<span class="params">&#123; loaded, total &#125;</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    element.innerHTML = <span class="built_in">Math</span>.round((loaded / total) * <span class="number">100</span>) + <span class="string">"%"</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>在 Axios 中实现一个进度指示器更加简单，尤其是当你使用了 <a href="https://github.com/rikmms/progress-bar-4-axios/" target="_blank" rel="noopener">Axios Progress Bar</a> 模块。首先，你需要包含以下样式和脚本：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">  <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">type</span>=<span class="string">"text/css"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">href</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/nprogress.css"</span></span></span><br><span class="line"><span class="tag">/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>然后你可以像以下这样来实现进度条：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">  loadProgressBar();</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> url =</span></span><br><span class="line"><span class="javascript">    <span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">downloadFile</span>(<span class="params">url</span>) </span>&#123;</span></span><br><span class="line">    axios</span><br><span class="line"><span class="javascript">      .get(url, &#123; <span class="attr">responseType</span>: <span class="string">"blob"</span> &#125;)</span></span><br><span class="line"><span class="javascript">      .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> reader = <span class="keyword">new</span> <span class="built_in">window</span>.FileReader();</span></span><br><span class="line">        reader.readAsDataURL(response.data);</span><br><span class="line"><span class="javascript">        reader.onload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).setAttribute(<span class="string">"src"</span>, reader.result);</span></span><br><span class="line">        &#125;;</span><br><span class="line">      &#125;)</span><br><span class="line"><span class="javascript">      .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(error);</span></span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  downloadFile(url);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这段代码使用了 <code>FileReader</code> 去异步读取下载的图像。 <code>readAsDataURL</code> 方法以 base64 格式来返回图像数据，然后嵌入到 <code>img</code> 标签的 <code>src</code> 属性以展示图像。</p>
-<h1 id="并行请求"><a href="#并行请求" class="headerlink" title="并行请求"></a>并行请求</h1><p>为同时发送多个请求，Axios 提供了<code>axios.all()</code>方法。只要传递一个请求数组到这个方法，再使用 <code>axios.spread()</code> 来将响应数组的属性指定到不同的变量：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios</span><br><span class="line">  .all([</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">  ])</span><br><span class="line">  .then(</span><br><span class="line">    axios.spread(<span class="function">(<span class="params">obj1, obj2</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// Both requests are now complete</span></span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj1.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj1.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj2.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj2.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
-<p>你可以通过内置的 <code>Promise.all()</code> 方法来实现相同的结果。将 fetch 请求作为数组传递给 <code>Promise.all()</code>。然后，通过 <code>async</code> 函数处理响应，如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.all([</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">])</span><br><span class="line">  .then(<span class="keyword">async</span> ([res1, res2]) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> a = <span class="keyword">await</span> res1.json();</span><br><span class="line">    <span class="keyword">const</span> b = <span class="keyword">await</span> res2.json();</span><br><span class="line">    <span class="built_in">console</span>.log(a.login + <span class="string">" has "</span> + a.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(b.login + <span class="string">" has "</span> + b.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>Axios 在紧密的包装中为大多数的 HTTP 通信提供了易于使用的的 API。但是，如果你更喜欢坚持原生 API，那就没什么能够阻挡你实现 Axios 的特性的。</p>
-<p>如文中讨论的，我们在使用浏览器提供的 <code>fetch()</code> 方法时完全有能力复现 Axios 的关键特性。最后，是否值得加载一个客户端 HTTP API 取决于你是否能舒服的使用内置 API 工作。</p>
+<p>  2.1 安装后运行nvm，发现找不到命令，因为在zshell里没有增加配置 </p>
+<ol start="3">
+<li><p>好的，修改了<code>～/.zshrc</code> 配置文件，结果发现修改后每次打开命令行窗口，弹出什么<code>compdef</code>命令找不到</p>
+</li>
+<li><p>搜索原因，找到需要将最后一行配置注释掉，好的注释掉了。</p>
+</li>
+<li><p>开始用<code>nvm</code>安装<code>node</code>，巨慢无比，好的，替换register为淘宝镜像</p>
+</li>
+<li><p>利用<code>nvm</code>安装<code>node</code>最新稳定版本 </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nvm install stable</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>成功了。</p>
+<ol start="7">
+<li><p>从网上找现成的blog仓库，<code>git clone</code>，提示需要安装<code>xcode 命令行工具</code>，excuse me？</p>
+</li>
+<li><p>照着提示安装，下载完来一句<code>您已经安装过了</code>？ excuse me again？</p>
+</li>
+<li><p>反复试了几遍后，好吧， 从苹果官网下最新的安装包，啥也没提示，安装成功了。</p>
+</li>
+<li><p>继续<code>git clone</code>，成功了。一顿改造<code>config</code>文件。</p>
+</li>
+<li><p>然后安装<code>hexo</code>：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>巨慢无比</p>
+<ol start="12">
+<li><p>OK，习惯了，把<code>npm</code>的register替换为淘宝镜像，用的<code>nrm</code>，好在搞定了。</p>
+</li>
+<li><p>启动<code>hexo</code>工程, 又报了个什么错误来着，记不住了，好在好改。</p>
+</li>
+<li><p>工程顺利启动，添加和修改各种功能，blog从本地跑起来了。</p>
+</li>
+<li><p>发布blog，上<code>github.io</code>，报错？<code>typeError [ERR_INVALID_ARG_TYPE]: The &quot;mode&quot; argument must be integer. Recei...</code> WTF?</p>
+</li>
+<li><p>继续追查，<code>node</code> 版本过高，擦</p>
+</li>
+<li><p>好在有<code>nvm</code>，这时候用发现nvm真是好东西，所以赶紧从15降到了12.</p>
+</li>
+<li><p>重新安装一次：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm -rf node_modules</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>好了，这回可以了，运行<code>hexo</code>，找不到命令？什么情况？把我的hexo也给删了？</p>
+<ol start="19">
+<li><p>好吧，重新安装一次<code>hexo</code>，这回终于发布成功了。</p>
+</li>
+<li><p>期间还遇到一些小问题，比如<code>hexo douban</code>啦, <code>baidu submit</code>影响发布啦之类的问题，按下不表</p>
+</li>
+</ol>
+<p>这还是网上相对成熟的方案，出了这么多幺蛾子，开源的东西真是一言难尽。</p>
 ]]></content>
       <categories>
-        <category>技术</category>
-        <category>前端</category>
+        <category>博客</category>
+        <category>技术文章</category>
       </categories>
       <tags>
-        <tag>翻译</tag>
-        <tag>JavaScript</tag>
+        <tag>hexo 缺陷 博客</tag>
       </tags>
   </entry>
   <entry>
@@ -652,6 +661,70 @@
       </tags>
   </entry>
   <entry>
+    <title>「译」axios和fetch，我们应该用哪个？</title>
+    <url>/posts/axios-or-fetch-api.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="note info"><p>原文链接： <a href="https://blog.logrocket.com/axios-or-fetch-api/" target="_blank" rel="noopener">Axios or fetch(): Which should you use?</a></p></div>
+<p>Axios 一直是我开发项目时发送 HTTP 请求的首选。最近看到一篇外文博客里，详细介绍了如何在使用 fetch 的时候实现 Axios 的一些关键特性，以使我们能够方便的过渡到 fetch 这一原生 API 上。</p>
+<a id="more"></a>
+<hr>
+<p>在我最近的一篇文章 <a href="https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/#new_tab" target="_blank" rel="noopener">如何像一个老手一样通过 Axios 发送 HTTP 请求</a> 中，我讨论了使用 Axios 的好处。然而 Axios 并非总是理想的解决方案，有时还有其他更好的做法来发送 HTTP 请求。</p>
+<p>毫无疑问，由于更易使用，一些开发者更喜欢 Axios 而非原生的内置 API。但也有很多人高估了这个库的必要性。<code>fecth()</code> API 能够完美复现 Axios 的关键特性，并且它还有一个额外的优点：已内置在所有现代浏览器里。</p>
+<h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><p>在我们进一步深入 Axios 的更多高级特性之前，我们先来比较一下它和 <code>fetch()</code> 的基本语法。这里展示了你该如何通过 Axios 发送一个带有自定义头部信息的 POST 请求到一个 URL 地址。Axios 将会帮你自动把响应数据转成 JSON 格式。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  url: <span class="string">"http://localhost/test.htm"</span>,</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  data: &#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">axios(options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>现在我们将这份代码与 <code>fetch()</code> 版本的代码比较一下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fetch()</span></span><br><span class="line"><span class="keyword">const</span> url = <span class="string">"http://localhost/test.htm"</span>;</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">"application/json"</span>,</span><br><span class="line">    <span class="string">"Content-Type"</span>: <span class="string">"application/json;charset=UTF-8"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    a: <span class="number">10</span>,</span><br><span class="line">    b: <span class="number">20</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">fetch(url, options).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.status);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>注意：</p>
+<ul>
+<li>为发送数据，<code>fetch()</code> 使用的是 body 属性，而 Axios 使用的是 data 属性</li>
+<li><code>fetch()</code> 中的数据需要处理为字符串</li>
+<li>在 <code>fetch()</code> 中， URL 是作为一个参数传递的，然而在 Axios 中，URL 是被放在 options 对象中传入的</li>
+</ul>
+<h1 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h1><p>Axios 的一个主要卖点即是它广泛的浏览器兼容性，即使是如 IE11 这样的老浏览器也能正常运行 Axios。另一方面，<code>fetch()</code> 只支持 Chrome 42+, FireFox 39+, Edge 14+ 以及 Safari 10.1+。（你可以在 <a href="https://caniuse.com/#search=Fetch" target="_blank" rel="noopener">Can I use</a> 里查看完整的兼容性表）</p>
+<p>如何向后兼容性是你使用 Axios 的唯一理由，那其实你不是真的需要一个 HTTP 库。作为替代，你可以在不支持 <code>fetch()</code> 的浏览器上使用 <a href="https://github.com/github/fetch" target="_blank" rel="noopener">这样</a> 的 polyfill 以实现类似的功能。要开始使用这样的 fetch polyfill，通过 npm 命令安装它：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install whatwg-fetch --save</span><br></pre></td></tr></table></figure>
+<p>然后你可以像这样发送请求：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &apos;whatwg-fetch&apos;</span><br><span class="line">window.fetch(...)</span><br></pre></td></tr></table></figure>
+<p>记住，在老式浏览器上你可能还需要一个 promise 的 polyfill。</p>
+<h1 id="响应超时"><a href="#响应超时" class="headerlink" title="响应超时"></a>响应超时</h1><p>在 Axios 中设置响应超时很简单，这也成为了开发者选择它的另外一个原因。你可以在配置对象中设置 <code>timeout</code> 属性以设置请求终止的毫秒数，例如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  method: <span class="string">"post"</span>,</span><br><span class="line">  url: <span class="string">"/login"</span>,</span><br><span class="line">  timeout: <span class="number">4000</span>, <span class="comment">// 4 seconds timeout</span></span><br><span class="line">  data: &#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
+<p><code>fetch()</code> 通过 <code>AbortController</code> 接口来提供类似的功能。虽然不如 Axios 来的那么简单：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> controller = <span class="keyword">new</span> AbortController();</span><br><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">  method: <span class="string">"POST"</span>,</span><br><span class="line">  signal: controller.signal,</span><br><span class="line">  body: <span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">    firstName: <span class="string">"David"</span>,</span><br><span class="line">    lastName: <span class="string">"Pollock"</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> promise = fetch(<span class="string">"/login"</span>, options);</span><br><span class="line"><span class="keyword">const</span> timeoutId = setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> controller.abort(), <span class="number">4000</span>);</span><br><span class="line"></span><br><span class="line">promise</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">/* handle the response */</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(<span class="string">"timeout exceeded"</span>));</span><br></pre></td></tr></table></figure>
+<p>这里，我们通过 <code>AbortController.AbortController()</code> 构造函数创建一个 <code>AbortController</code>，之后我们将用这个对象取消请求。<code>signal</code> 是 <code>AbortController</code> 的一个只读属性，提供了与请求通信或取消的方法。如果服务器在 4 秒内没有响应，<code>controller.abort()</code> 就会被调用，然后通信操作会被终止。</p>
+<h1 id="自动-JSON-数据转换"><a href="#自动-JSON-数据转换" class="headerlink" title="自动 JSON 数据转换"></a>自动 JSON 数据转换</h1><p>正如我们之前说过的，Axios 在发送请求的时候会自动将数据字符串化（尽管你也可以覆写默认的行为来定义一个不同的转换机制）。但当使用 <code>fetch()</code> 的时候，你需要手动做这个事。比较一下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// axios</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/orgs/axios"</span>).then(</span><br><span class="line">  response =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(response.data);</span><br><span class="line">  &#125;,</span><br><span class="line">  error =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fetch()</span></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json()) <span class="comment">// one extra step</span></span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> <span class="built_in">console</span>.error(error));</span><br></pre></td></tr></table></figure>
+<p>数据自动转换是一个不错的功能，但再一次的，这并不是什么你在 <code>fetch()</code> 里做不了的东西。</p>
+<h1 id="HTTP-拦截器"><a href="#HTTP-拦截器" class="headerlink" title="HTTP 拦截器"></a>HTTP 拦截器</h1><p>Axios 的一个关键特性即是它拦截 HTTP 请求的能力。HTTP 拦截器在你需要测试或改变从你的应用到服务器（反之亦然）的 HTTP 请求的时候派得上用场（例如，日志、权限认证等）。有了拦截器，你不再需要为每个 HTTP 请求写单独的代码。</p>
+<p>这里展示了你该如何在 Axios 里生命一个请求拦截器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios.interceptors.request.use(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// log a message before any HTTP request is sent</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> config;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// sent a GET request</span></span><br><span class="line">axios.get(<span class="string">"https://api.github.com/users/sideshowbarker"</span>).then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在这里，<code>axios.interceptors.request.use()</code> 方法用来定义一段在 HTTP 请求发送之前的代码逻辑。</p>
+<p>默认情况下，<code>fetch()</code> 并没有提供一个拦截 HTTP 的方法，但是想出一个变通的办法并不难。你可以像这样覆写全局的 fetch 方法来定义一个你自己的拦截器：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fetch = (<span class="function"><span class="params">originalFetch</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...<span class="built_in">arguments</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = originalFetch.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">return</span> result.then(<span class="built_in">console</span>.log(<span class="string">"Request was sent"</span>));</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)(fetch);</span><br><span class="line"></span><br><span class="line">fetch(<span class="string">"https://api.github.com/orgs/axios"</span>)</span><br><span class="line">  .then(<span class="function"><span class="params">response</span> =&gt;</span> response.json())</span><br><span class="line">  .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="下载进度"><a href="#下载进度" class="headerlink" title="下载进度"></a>下载进度</h1><p>进度指示器在下载大型资源的时候非常有用，尤其是那些网速较慢的用户。以前，JavaScript 开发者使用<code>XMLHttpRequest.onprogress</code>回调处理器来实现进度指示器。</p>
+<p><a href="https://blog.logrocket.com/patterns-for-data-fetching-in-react-981ced7e5c56/" target="_blank" rel="noopener">Fetch API</a> 没有 <code>onprogress</code> 处理器。取而代之的是，它通过响应对象的 body 属性提供了一个<code>ReadableStream</code>的实例。</p>
+<p>下面的例子展示了通过使用 <code>ReadableStream</code> 来为用户在图像下载过程中提供即时反馈：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// original code: https://github.com/AnthumChris/fetch-progress-indicators</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"progress"</span> <span class="attr">src</span>=<span class="string">""</span>&gt;</span>progress<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="meta">  "use strict"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> element = <span class="built_in">document</span>.getElementById(<span class="string">"progress"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  fetch(<span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>)</span></span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line">      if (!response.ok) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(response.status + <span class="string">" "</span> + response.statusText);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure ReadableStream is supported</span></span></span><br><span class="line">      if (!response.body) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"ReadableStream not yet supported in this browser."</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// store the size of the entity-body, in bytes</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> contentLength = response.headers.get(<span class="string">"content-length"</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// ensure contentLength is available</span></span></span><br><span class="line">      if (!contentLength) &#123;</span><br><span class="line"><span class="javascript">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"Content-Length response header unavailable"</span>);</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="comment">// parse the integer into a base-10 number</span></span></span><br><span class="line"><span class="javascript">      <span class="keyword">const</span> total = <span class="built_in">parseInt</span>(contentLength, <span class="number">10</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">let</span> loaded = <span class="number">0</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> <span class="keyword">new</span> Response(</span></span><br><span class="line"><span class="javascript">        <span class="comment">// create and return a readable stream</span></span></span><br><span class="line"><span class="javascript">        <span class="keyword">new</span> ReadableStream(&#123;</span></span><br><span class="line">          start(controller) &#123;</span><br><span class="line"><span class="javascript">            <span class="keyword">const</span> reader = response.body.getReader();</span></span><br><span class="line"></span><br><span class="line">            read();</span><br><span class="line"><span class="javascript">            <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line">              reader</span><br><span class="line">                .read()</span><br><span class="line"><span class="javascript">                .then(<span class="function">(<span class="params">&#123; done, value &#125;</span>) =&gt;</span> &#123;</span></span><br><span class="line">                  if (done) &#123;</span><br><span class="line">                    controller.close();</span><br><span class="line"><span class="javascript">                    <span class="keyword">return</span>;</span></span><br><span class="line">                  &#125;</span><br><span class="line">                  loaded += value.byteLength;</span><br><span class="line">                  progress(&#123; loaded, total &#125;);</span><br><span class="line">                  controller.enqueue(value);</span><br><span class="line">                  read();</span><br><span class="line">                &#125;)</span><br><span class="line"><span class="javascript">                .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">                  <span class="built_in">console</span>.error(error);</span></span><br><span class="line">                  controller.error(error);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">response</span> =&gt;</span></span></span><br><span class="line"><span class="javascript">      <span class="comment">// construct a blob from the data</span></span></span><br><span class="line">      response.blob()</span><br><span class="line">    )</span><br><span class="line"><span class="javascript">    .then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="comment">// insert the downloaded image into the page</span></span></span><br><span class="line"><span class="javascript">      <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).src = URL.createObjectURL(data);</span></span><br><span class="line">    &#125;)</span><br><span class="line"><span class="javascript">    .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.error(error);</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">progress</span>(<span class="params">&#123; loaded, total &#125;</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    element.innerHTML = <span class="built_in">Math</span>.round((loaded / total) * <span class="number">100</span>) + <span class="string">"%"</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在 Axios 中实现一个进度指示器更加简单，尤其是当你使用了 <a href="https://github.com/rikmms/progress-bar-4-axios/" target="_blank" rel="noopener">Axios Progress Bar</a> 模块。首先，你需要包含以下样式和脚本：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span></span></span><br><span class="line"><span class="tag">  <span class="attr">rel</span>=<span class="string">"stylesheet"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">type</span>=<span class="string">"text/css"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">href</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/nprogress.css"</span></span></span><br><span class="line"><span class="tag">/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后你可以像以下这样来实现进度条：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span>=<span class="string">"img"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">  loadProgressBar();</span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> url =</span></span><br><span class="line"><span class="javascript">    <span class="string">"https://fetch-progress.anthum.com/30kbps/images/sunrise-baseline.jpg"</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">  <span class="function"><span class="keyword">function</span> <span class="title">downloadFile</span>(<span class="params">url</span>) </span>&#123;</span></span><br><span class="line">    axios</span><br><span class="line"><span class="javascript">      .get(url, &#123; <span class="attr">responseType</span>: <span class="string">"blob"</span> &#125;)</span></span><br><span class="line"><span class="javascript">      .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">const</span> reader = <span class="keyword">new</span> <span class="built_in">window</span>.FileReader();</span></span><br><span class="line">        reader.readAsDataURL(response.data);</span><br><span class="line"><span class="javascript">        reader.onload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">document</span>.getElementById(<span class="string">"img"</span>).setAttribute(<span class="string">"src"</span>, reader.result);</span></span><br><span class="line">        &#125;;</span><br><span class="line">      &#125;)</span><br><span class="line"><span class="javascript">      .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(error);</span></span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  downloadFile(url);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这段代码使用了 <code>FileReader</code> 去异步读取下载的图像。 <code>readAsDataURL</code> 方法以 base64 格式来返回图像数据，然后嵌入到 <code>img</code> 标签的 <code>src</code> 属性以展示图像。</p>
+<h1 id="并行请求"><a href="#并行请求" class="headerlink" title="并行请求"></a>并行请求</h1><p>为同时发送多个请求，Axios 提供了<code>axios.all()</code>方法。只要传递一个请求数组到这个方法，再使用 <code>axios.spread()</code> 来将响应数组的属性指定到不同的变量：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios</span><br><span class="line">  .all([</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">    axios.get(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">  ])</span><br><span class="line">  .then(</span><br><span class="line">    axios.spread(<span class="function">(<span class="params">obj1, obj2</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// Both requests are now complete</span></span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj1.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj1.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">      <span class="built_in">console</span>.log(</span><br><span class="line">        obj2.data.login +</span><br><span class="line">          <span class="string">" has "</span> +</span><br><span class="line">          obj2.data.public_repos +</span><br><span class="line">          <span class="string">" public repos on GitHub"</span></span><br><span class="line">      );</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
+<p>你可以通过内置的 <code>Promise.all()</code> 方法来实现相同的结果。将 fetch 请求作为数组传递给 <code>Promise.all()</code>。然后，通过 <code>async</code> 函数处理响应，如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.all([</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/iliakan"</span>),</span><br><span class="line">  fetch(<span class="string">"https://api.github.com/users/taylorotwell"</span>)</span><br><span class="line">])</span><br><span class="line">  .then(<span class="keyword">async</span> ([res1, res2]) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> a = <span class="keyword">await</span> res1.json();</span><br><span class="line">    <span class="keyword">const</span> b = <span class="keyword">await</span> res2.json();</span><br><span class="line">    <span class="built_in">console</span>.log(a.login + <span class="string">" has "</span> + a.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(b.login + <span class="string">" has "</span> + b.public_repos + <span class="string">" public repos on GitHub"</span>);</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(error);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>Axios 在紧密的包装中为大多数的 HTTP 通信提供了易于使用的的 API。但是，如果你更喜欢坚持原生 API，那就没什么能够阻挡你实现 Axios 的特性的。</p>
+<p>如文中讨论的，我们在使用浏览器提供的 <code>fetch()</code> 方法时完全有能力复现 Axios 的关键特性。最后，是否值得加载一个客户端 HTTP API 取决于你是否能舒服的使用内置 API 工作。</p>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>前端</category>
+      </categories>
+      <tags>
+        <tag>翻译</tag>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git命令行实战：谁动了我的奶酪</title>
     <url>/posts/git-who-moved-my-cheese.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/boat-in-sky.jpg!thumbnail" alt="题图"></p>
@@ -753,285 +826,6 @@
       </categories>
       <tags>
         <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo搭建个人博客系列：部署上线篇</title>
-    <url>/posts/hexo-deploy-to-VPS.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/dolphin.jpg!thumbnail" alt="题图" title="Photo by Felix Hernandez Dreamphography"></p>
-<p>本文主要介绍了在将Hexo博客部署上线过程中将会遇到的一系列问题。</p>
-<p>第一章主要介绍了将 Hexo 部署到 VPS 的方案，使得在本地推送更新后自动同步线上内容，部署过程主要分为三步走，首先从本地推送更新到远程仓库，然后触发 Git Hooks 将静态资源部署到 Web 根目录，最后启动 Nginx 服务器。</p>
-<p>第二章主要介绍了如何分析页面加载性能瓶颈，并提供了通过CDN和代码压缩合并等方法来优化页面加载速度的方案。</p>
-<p>第三章主要介绍了如何将站点提交到各大搜索引擎收录，并讨论了SEO相关话题。</p>
-<p>后续章节则零散的介绍了为站点添加404页面和RSS链接。</p>
-<a id="more"></a>
-<p>部署个人博客主要有两种方案，一种是托管到Github Pages上，一种是部署到自己的VPS上。</p>
-<p>对于Github Pages，优势在于完全免费，部署方便快捷，适用于新手，但一个Github账号只能用来部署一个个人站点。另外，Github服务器在国外，理论上从国内加载站点资源会有延迟，并且由于GFW的存在有时候可能访问不到站点。当然，可以通过Coding Pages来实现国内外双线部署来解决这个问题，详情可以参考网上相关教程。</p>
-<p>对于VPS，需要独立购买域名和服务器，还需要熟悉Linux系统的基本操作，但同时也提供了更广的自由度。本篇主要介绍使用VPS部署博客的方案。</p>
-<h1 id="VPS自动部署"><a href="#VPS自动部署" class="headerlink" title="VPS自动部署"></a>VPS自动部署</h1><div class="note info"><p>本章节参考 <a href="https://blog.yizhilee.com/post/deploy-hexo-to-vps/" target="_blank" rel="noopener">荔枝 | 通过 Git Hooks 自动部署 Hexo 到 VPS</a></p></div>
-<p>使用VPS部署博客的主要思路分为三步：</p>
-<ul>
-<li><code>hexo deploy</code> 的时候通过git把 public 目录下的博客静态资源推送到远程仓库中</li>
-<li>推送更新时触发 Git Hooks 将静态资源克隆到网站根目录下</li>
-<li>使用 nginx 作为Web服务器提供对博客的 HTTP 访问</li>
-</ul>
-<p>本文基于腾讯云 Ubuntu 16.04实现自动部署。</p>
-<h2 id="远程仓库推送"><a href="#远程仓库推送" class="headerlink" title="远程仓库推送"></a>远程仓库推送</h2><p>在推送静态资源之前需要做些准备工作，包括基于公钥的ssh通信以及VPS用户和权限管理。</p>
-<div class="note info"><p>在进行下一步操作之前请先确认本地已经安装了 <a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a> 和 <a href="https://nodejs.org/zh-cn/" target="_blank" rel="noopener">Node.js</a>。</p></div>
-<p>为什么要实现基于公钥的ssh通信？</p>
-<p>通常可以使用密码和公钥两种方式登陆VPS，如果在VPS上为某用户添加了授权公钥，则之后每次以该用户身份登陆或者获取授权就无须再重复输入密码了。<strong>Hexo的git自动部署插件不支持使用密码验证授权</strong>，所以要实现基于公钥的ssh通信。</p>
-<p>如果尚未生成ssh公钥对，执行如下命令生成新的公钥对：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>无须设置公钥密码，否则每次通过公钥登陆的时候都要输入密码。</p></div>
-<p>如果是Windows操作系统，此时会在 C:\Users\Username\.ssh\ 目录下生成密钥文件 id_rsa 和公钥文件 id_rsa.pub。</p>
-<p>腾讯云的默认登陆用户名为ubuntu，在设置根用户密码之前无法切换为根用户，可以通过 <code>sudo passwd</code> 命令来设置根用户密码，然后通过 <code>su</code> 命令切换到根用户身份。</p>
-<p>以管理员权限执行如下命令新建用户并设置密码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo adduser git</span><br><span class="line">$ sudo passwd git</span><br></pre></td></tr></table></figure>
-<p>这一步虽然不是必须的，但一般情况下都会单独新建git用户专用于git代码同步，并将远程仓库放在git用户目录下。</p>
-<p>为方便后续以git用户身份获取管理员权限来新建目录，此处为其添加管理员操作权限：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo gpasswd -a git sudo</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>该命令指的是将 git 用户添加到 sudo用户组中，也就使得git用户有了sudo用户组的操作权限。</p></div>
-<p>在本地Git Bash中执行如下命令将ssh公钥上传到VPS：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ssh-copy-id git@yearito.cn</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>该命令会自动把默认ssh公钥id_rsa.pub中的内容拷贝到git用户目录下的 .ssh/authorized_keys文件中。</p></div>
-<p>此时在本地cmd中用git用户登陆VPS将会直接成功登陆而无须输入密码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ssh git@yearito.cn</span><br></pre></td></tr></table></figure>
-<p>在git用户目录下执行如下命令创建远程仓库：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ mkdir blog.yearito.git</span><br><span class="line">$ cd blog.yearito.git</span><br><span class="line">$ git init --bare</span><br></pre></td></tr></table></figure>
-<p>在本地站点根目录下执行以下命令安装相关依赖：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-<p>在本地站点配置文件中添加git远程仓库信息：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@yearito.cn:~/blog.yearito.git</span><br></pre></td></tr></table></figure>
-<p>此时在站点根目录下执行 <code>hexo deploy</code> 命令，如果最后一行出现如下提示：</p>
-<blockquote>
-<p><span style="color: green">INFO</span>  Deploy done: git</p>
-</blockquote>
-<p>则说明已经实现本地和VPS远程仓库之间的资源同步了。</p>
-<div class="note info"><p>需要注意的是，同步的仅是 public 目录下的静态资源文件，而非整个项目目录。</p></div>
-<p>如果在部署过程中出现如下提示：</p>
-<blockquote>
-<p>The file will have its original line endings in your working directory. <br>
-warning: LF will be replaced by CRLF in tags/Hexo/index.html.</p>
-</blockquote>
-<p>这是由 Windows 操作系统和 Linux 操作系统中行尾换行符不一致所引起的，可以通过执行 <code>git config core.autocrlf false</code> 来关闭告警。</p>
-<h2 id="Git-Hooks-拷贝资源"><a href="#Git-Hooks-拷贝资源" class="headerlink" title="Git Hooks 拷贝资源"></a>Git Hooks 拷贝资源</h2><p>此时VPS上的远程仓库只是一个裸仓库，无法用于搭建站点服务器。所以我们需要在推送更新的同时触发Git Hooks钩子，来从远程仓库中克隆出完整的博客资源放到Web服务器根目录下。</p>
-<p>首先创建Web根目录：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir /var/www/blog.yearito -p</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>其中，-p 参数表示若所要建立目录的上层目录目前尚未建立，则一并建立上层目录。</p></div>
-<p>然后改变Web根目录的所有者和所有工作组，以使git用户拥有对该目录的操作权限：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo chown git:git -R /var/www/blog.yearito</span><br></pre></td></tr></table></figure>
-<p>打开到远程仓库中的hooks目录下，默认该目录下是没有post-receive钩子文件的，直接通过 <code>vim post-receive</code> 新建该文件并添加以下代码：</p>
-<figure class="highlight bash"><figcaption><span>~/blog.yearito.git/hooks/post-receive</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"post-receive hook is running..."</span></span><br><span class="line"></span><br><span class="line">GIT_REPO=/home/git/blog.yearito.git</span><br><span class="line">TMP_GIT_CLONE=/tmp/blog.yearito</span><br><span class="line">PUBLIC_WWW=/var/www/blog.yearito</span><br><span class="line"></span><br><span class="line">rm -rf <span class="variable">$TMP_GIT_CLONE</span></span><br><span class="line">git <span class="built_in">clone</span> <span class="variable">$GIT_REPO</span> <span class="variable">$TMP_GIT_CLONE</span></span><br><span class="line">rm -rf <span class="variable">$&#123;PUBLIC_WWW&#125;</span>/*</span><br><span class="line">cp -rf <span class="variable">$&#123;TMP_GIT_CLONE&#125;</span>/* <span class="variable">$&#123;PUBLIC_WWW&#125;</span>/</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>为什么不直接将裸仓库克隆到Web根目录下呢？我之前也一直被这个问题困扰，感觉先克隆到 tmp 目录再拷贝到Web根目录是多此一举。后来我觉得可能是出于项目安全的考虑，在执行cp命令的时候，.git作为隐藏目录不会被拷贝到Web根目录下，也就避免了将整个仓库历史暴漏在Web服务中。</p></div>
-<p>输入 <code>:wq</code> 保存并退出，此时可以看到 post-receive 文件只有读写权限，没有执行权限：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/post-receive-before.png" alt="修改 post-receive 权限前" title="修改 post-receive 权限前"></p>
-<p>执行以下代码：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chmod +x post-receive</span><br></pre></td></tr></table></figure>
-<p>执行后可以看到 post-receive 已获得执行权限：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/post-receive-after.png" alt="修改 post-receive 权限后" title="修改 post-receive 权限后"></p>
-<p>然后在本地站点目录下执行 <code>hexo deploy -g</code>，如果出现我们之前设定好的 <code>remote: post-receive hook is running...</code> 提示，且没有其他权限错误，则说明钩子正确执行了，从远程仓库拷贝资源成功，此时打开 /var/www/blog.yearito/ 目录可以看到完整的博客静态资源文件。</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/auto-deploy-success.png" alt="Git Hooks 拷贝资源成功" title="Git Hooks 拷贝资源成功"></p>
-<h2 id="配置Nginx服务器"><a href="#配置Nginx服务器" class="headerlink" title="配置Nginx服务器"></a>配置Nginx服务器</h2><p>将静态资源部署到Web服务器根目录后，接下来要做就是通过配置Nginx来启动Web服务。</p>
-<p>切换到根用户并安装Nginx：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ apt-get install nginx</span><br></pre></td></tr></table></figure>
-<p>成功安装后可以通过 <code>nginx -v</code> 查看Nginx版本信息，以及可以通过 <code>service nginx status</code> 或者 <code>systemctl status nginx</code> 命令来查看Nginx运行状态。</p>
-<p>修改nginx配置文件内容，启动80端口的HTTP服务到Web根目录，此处提供最简配置作为参考，读者可以在此基础上自定义：</p>
-<figure class="highlight nginx"><figcaption><span>/etc/nginx/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attribute">user</span> www-data;</span><br><span class="line"><span class="attribute">worker_processes</span> auto;</span><br><span class="line"><span class="attribute">pid</span> /run/nginx.pid;</span><br><span class="line"></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">  <span class="attribute">worker_connections</span>  <span class="number">768</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">  <span class="attribute">include</span>  mime.types;</span><br><span class="line">  <span class="attribute">default_type</span>  application/octet-stream;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">sendfile</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">  <span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>  <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">root</span> /var/www/blog.yearito;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>此时通过 <code>nginx -s reload</code> 重新加载配置文件，如果此前Nginx服务未启动，则直接执行 <code>nginx</code> 命令即可。</p>
-<p>执行以下命令设置Nginx开机自动启动：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ systemctl enable nginx</span><br></pre></td></tr></table></figure>
-<p>此外提供一些其他的Nginx语法命令：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nginx -s stop //强制关闭</span><br><span class="line">nginx -s quit //完成当前服务后关闭</span><br><span class="line">nginx -s reload //重新加载配置文件</span><br></pre></td></tr></table></figure>
-<p>在浏览器中输入VPS域名，即可打开个人博客站点，至此实现了在本地推送更新后自动同步部署线上站点内容的功能。</p>
-<h1 id="页面加载性能"><a href="#页面加载性能" class="headerlink" title="页面加载性能"></a>页面加载性能</h1><p>博客上线后，需要关注页面的加载速度。<a href="https://developers.google.com/speed/pagespeed/insights/" target="_blank" rel="noopener">Google PageSpeed Insights</a> 可用于帮助分析网页加载速度瓶颈，该网站将会针对指定域名进行在线测试，并提供一份详细的页面加载分析报告，报告中还会根据页面资源加载情况给出合理的优化建议及预期优化效果，因此用户可以有的放矢的进行性能优化专项整改。</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/pagespeed-insights.png" alt="Google PageSpeed Insights" title="Google Pagespeed Insights"></p>
-<p>虽然可以从报告中了解到站点的加载性能瓶颈，但是，报告中仅是提供优化建议，具体的落实还须自己实施。本章节主要介绍CDN加速和代码合并压缩两种比较常见的优化方案。</p>
-<h2 id="CDN加速"><a href="#CDN加速" class="headerlink" title="CDN加速"></a>CDN加速</h2><p>在控制台的Network Tab页中可以查看到页面加载瀑布流。在此需要勾选 Disable cache 以避免缓存干扰分析。另外，在所有静态资源中，对加载速度影响较大且存在大幅优化空间的主要还是JS脚本，所以我们先拿它开刀。</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/before-optimize.png" alt="页面加载瀑布流" title="页面加载瀑布流"></p>
-<p>首先理解一下底部信息栏中的这行文字：</p>
-<blockquote>
-<p><span style="font-family: Arial">21 / 50 requests | 518 KB / 818KB transferred | Finish: 8.44 s | <span style="color: blue">DOMContentLoaded: 4.36 s</span> | <span style="color: red">Load: 6.80 s</span></span></p>
-</blockquote>
-<p>主要包括以下几条信息：</p>
-<ul>
-<li>加载页面总共发起了50次请求，下载了818 KB资源，其中JS脚本资源共计518 KB，占据了21次请求。</li>
-<li>在 4.36 s 时DOM树渲染完毕（蓝线），此时已经可以看到正常的页面，由于JS脚本会阻塞DOM解析，所以这段时间是包含了JS脚本的下载与执行过程的。</li>
-<li>在 6.80 s 时所有资源加载完毕（红线），包括异步的脚本和其他非阻塞的页面资源，如图片、CSS文件等。</li>
-<li>在 8.44 s 时所有HTTP请求响应完毕，包括XHR请求。</li>
-</ul>
-<div class="note info"><p>关于 Finish / DOMContentLoaded / Load 的讨论请参见 <a href="https://stackoverflow.com/questions/31729240/how-to-analyzing-page-speed-in-chrome-dev-tools" target="_blank" rel="noopener">How to analyzing Page Speed in Chrome Dev tools</a> 和 <a href="https://segmentfault.com/q/1010000011840948/a-1020000011947156" target="_blank" rel="noopener">chrome devtools 中 network 一栏中的 Finish 时间代表着什么</a>，两者说法不一致，我倾向于认同后者的观点。</p></div>
-<p>分析以上页面加载瀑布流可知，DOM树的解析渲染主要是被从VPS本地下载 jquery、velocity、fancybox 等脚本所滞后，所以对症下药，我们可以改为从开源公共CDN加载脚本。</p>
-<p>对于在站点中用到的三方插件，在主题配置文件中为其添加CDN加载源：</p>
-<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">vendors:</span></span><br><span class="line">  <span class="attr">jquery:</span> <span class="string">//cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">fancybox:</span> <span class="string">https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.2/dist/jquery.fancybox.min.js</span></span><br><span class="line">  <span class="attr">fancybox_css:</span> <span class="string">https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.2/dist/jquery.fancybox.min.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">velocity:</span> <span class="string">https://cdn.jsdelivr.net/npm/velocity-animate@1.2.1/velocity.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">velocity_ui:</span> <span class="string">//cdn.jsdelivr.net/npm/velocity-animate@1.2.1/velocity.ui.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">fontawesome:</span> <span class="string">//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">algolia_instant_js:</span> <span class="string">https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js</span></span><br><span class="line">  <span class="attr">algolia_instant_css:</span> <span class="string">https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">pace:</span> <span class="string">//cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js</span></span><br><span class="line">  <span class="attr">pace_css:</span> <span class="string">//cdn.jsdelivr.net/npm/pace-js@1.0.2/themes/blue/pace-theme-minimal.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">pangu:</span> <span class="string">//cdn.jsdelivr.net/npm/pangu@3.3.0/dist/browser/pangu.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">valine:</span> <span class="string">https://cdn.jsdelivr.net/npm/valine@1.3.3/dist/Valine.min.js</span></span><br></pre></td></tr></table></figure>
-<div class="note info"><p>主题配置文件中给出的CDN链接示例的版本可能已经落后很久了，请查找并使用最新版的插件CDN链接。</p></div>
-<p>比较常用的开源项目CDN服务商主要有unpkg、bootcdn、 cdnjs、jsdelivr 和 cloudflare，用户可以自行在浏览器中检测资源下载速度后做取舍。本站中主要使用 jsdelivr 提供的CDN加速服务。</p>
-<p>使用CDN加速后页面加载瀑布流如下：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/after-optimize.png" alt="CDN加载三方插件后的页面加载瀑布流" title="CDN加载三方插件后的页面加载瀑布流"></p>
-<p>DOM树的渲染完成时间缩减到了654 ms，<strong>也就是说刷新页面后654 ms后就可以看到页面内容了，相比优化前的4.36 s 有了极大的提升</strong>。</p>
-<p>如果开启了Live2D看板娘，一样可以通过将脚本来源改为CDN来完成性能优化：</p>
-<figure class="highlight diff"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line">  # Live2D</span><br><span class="line">  ## https://github.com/EYHN/hexo-helper-live2d</span><br><span class="line">  live2d:</span><br><span class="line">    enable: true</span><br><span class="line">    pluginRootPath: live2dw/ # Root path of plugin to be on the site (Relative)</span><br><span class="line">    pluginJsPath: lib/ # JavaScript path related to plugin's root (Relative)</span><br><span class="line">    pluginModelPath: assets/ # Relative model path related to plugin's root (Relative)</span><br><span class="line"><span class="deletion">-   scriptFrom: local # Default</span></span><br><span class="line"><span class="addition">+   scriptFrom: jsdelivr # jsdelivr CDN</span></span><br><span class="line">    tagMode: true # Whether only to replace live2d tag instead of inject to all pages</span><br><span class="line">    log: false # Whether to show logs in console</span><br><span class="line">    model:</span><br><span class="line">      use: live2d-widget-model-shizuku  # 萌系少女</span><br><span class="line">    display:</span><br><span class="line">      position: left</span><br><span class="line">      width: 100</span><br><span class="line">      height: 180</span><br><span class="line">    mobile:</span><br><span class="line">      show: false</span><br><span class="line">    react:</span><br><span class="line">      opacityDefault: 0.7 # 默认透明度</span><br></pre></td></tr></table></figure>
-<p>另外，我们注意到，处理 hotjar 的脚本共计耗时 5 s，那么该脚本是否影响到了页面加载性能呢？事实上没有，在HTML结构树中可以找到 hotjar 的脚本引入代码：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">async</span> <span class="attr">src</span>=<span class="string">"https://static.hotjar.com/c/hotjar-1061283.js?sv=6"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>其中 <code>async</code> 属性意味着脚本将以异步形式加载，不会阻塞DOM树的解析和渲染。也就是说该脚本只使得 Load 的完成时间滞后，但没有影响到 DOMContentLoaded 的时间节点。</p>
-<p>关于 Hotjar 是否会使得站点加载变慢，Hotjar 官方给出否定的回应，理由如下：</p>
-<ul>
-<li>通过异步的方式加载脚本</li>
-<li>脚本使用CDN加速</li>
-<li>脚本合理利用了浏览器缓存</li>
-</ul>
-<div class="note info"><p>更多详情请参考 <a href="https://help.hotjar.com/hc/en-us/articles/115009335727-Will-Hotjar-Slow-Down-My-Site-" target="_blank" rel="noopener">Will Hotjar Slow Down My Site?</a></p></div>
-<p>除了可以使用CDN加速三方插件外，还可以使用CDN域名加速来加速站点静态资源，包括HTML文件、CSS样式、字体文件等，具体操作方案参考VPS服务商说明文档。</p>
-<p>CDN域名加速也有几个坑点：</p>
-<ul>
-<li>CDN缓存会导致更新站点后访问到的仍是旧版内容，需要等待缓存刷新后才能看到更新。</li>
-<li>加速后就不能通过该域名建立ssh连接了，此时 <code>hexo deploy</code> 将会出现端口连接超时，可以将远程仓库地址改为真实IP地址来确保推送成功。</li>
-</ul>
-<h2 id="代码合并压缩"><a href="#代码合并压缩" class="headerlink" title="代码合并压缩"></a>代码合并压缩</h2><p>另一种优化页面加载速度的方案是通过删除注释和空格、将长变量名改为短变量名等方式压缩代码体积，从而缩短资源下载时间。</p>
-<p><a href="https://github.com/chenzhutian/hexo-all-minifier" target="_blank" rel="noopener">hexo-all-minifier</a> 插件通过集成下列插件提供一站式的资源压缩服务：</p>
-<ul>
-<li><a href="https://github.com/hexojs/hexo-html-minifier" target="_blank" rel="noopener">hexo-html-minifier</a>: 基于 <a href="https://github.com/kangax/html-minifier" target="_blank" rel="noopener">HTMLMinifier</a> 提供 HTML 压缩服务。</li>
-<li><a href="https://github.com/hexojs/hexo-clean-css" target="_blank" rel="noopener">hexo-clean-css</a>: 基于 <a href="https://github.com/jakubpawlowicz/clean-css" target="_blank" rel="noopener">clean-css</a> 提供 CSS 压缩服务。</li>
-<li><a href="https://github.com/hexojs/hexo-uglify" target="_blank" rel="noopener">hexo-uglify</a>: 基于 <a href="http://lisperator.net/uglifyjs/" target="_blank" rel="noopener">UglifyJS</a> 提供 JS 压缩服务。</li>
-<li><a href="https://github.com/vseventer/hexo-imagemin" target="_blank" rel="noopener">hexo-imagemin</a>: 基于 <a href="https://github.com/imagemin/imagemin" target="_blank" rel="noopener">imagemin</a> 提供图片压缩服务。</li>
-</ul>
-<p>此外，该插件还可以把多个JS脚本拼接打包到一个文件中来减少HTTP请求次数，从而减少页面加载时间。</p>
-<p>该方案从理论上来讲是有效且可行的，但是和一般的大型软件项目不同，博客项目中的主要资源是Markdown文件解析后的HTML文件，其核心是文本内容而非逻辑代码，压缩空间极其有限，在实际应用过程中效果并不明显，所以本站也就没有应用该插件功能。</p>
-<h1 id="搜索引擎"><a href="#搜索引擎" class="headerlink" title="搜索引擎"></a>搜索引擎</h1><h2 id="提交网址"><a href="#提交网址" class="headerlink" title="提交网址"></a>提交网址</h2><div class="note info"><p>本节参考 <a href="https://juejin.im/post/590b451a0ce46300588c43a0" target="_blank" rel="noopener">hexo高阶教程：教你怎么让你的hexo博客在搜索引擎中排第一</a></p></div>
-<p>在搜索引擎中输入 site:yearito.cn，会发现暂时还搜不到自己的站点：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/google-search-result.png" alt="谷歌搜索结果" title="谷歌搜索结果"></p>
-<p>想要搜到自己的站点，首先要将个人网站提交给搜索引擎收录。针对不同的搜索引擎需要分别提交网址，但提交的步骤是大同小异的：</p>
-<p><strong>第一步：提交网站域名</strong></p>
-<p>注意需要区分输入 http 与 https。</p>
-<p><strong>第二步：验证网站所有权</strong></p>
-<p>一般都包括以下三种验证方法，其本质都是通过一段字符串验证码来验证用户的网站所有权，三种方法任选其一：</p>
-<ul>
-<li>HTML文件验证：将给定的HTML文件上传到站点根目录下（验证码包含在HTML文件中）</li>
-<li>HTML元标签验证：在站点首页中添加给定的 <code>meta</code> 标签（验证码包含在 <code>meta</code> 标签属性中）</li>
-<li>CNAME验证：添加一个CNAME域名解析记录到指定站点（验证码包含在二级域名中）</li>
-</ul>
-<p>Next主题中已经内置集成了各大搜索引擎的HTML元标签验证方案，用户只需获取验证码填写到主题配置文件中并重新打包部署即可完成身份验证。</p>
-<p><strong>第三步：推送或者提交 sitemap</strong></p>
-<p>sitemap，又称站点地图，通常是一个xml格式的文件，最早由谷歌提出，现已被多数引擎所支持。里面包含了站点内的页面列表，帮助搜索引擎理解网站内容的组织架构。</p>
-<p>在Hexo中可以通过 <a href="https://github.com/hexojs/hexo-generator-sitemap" target="_blank" rel="noopener">hexo-generator-sitemap</a> 和 <a href="https://github.com/coneycode/hexo-generator-baidu-sitemap" target="_blank" rel="noopener">hexo-generator-baidu-sitemap</a> 两个插件帮助生成通用站点地图和百度专用站点地图文件。</p>
-<p>在站点根目录下执行以下命令安装相关依赖：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-sitemap --save-dev</span><br><span class="line">$ npm install hexo-generator-baidu-sitemap --save-dev</span><br></pre></td></tr></table></figure>
-<p>之后在执行 <code>hexo generate</code> 打包后即可在 public 目录下找到 sitemap.xml 和 baidusitemap.xml 两个文件，将该文件提交到搜索引擎站长后台即可帮助搜索引擎分析收录站点内容，各个搜索引擎收录效率不同，可能需要耐心等上几天。</p>
-<h3 id="谷歌"><a href="#谷歌" class="headerlink" title="谷歌"></a>谷歌</h3><p>在 <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console</a> 中提交站点域名，此时会提供几种验证网站所有权的方法，展开 <strong>其他验证方法</strong> 中的 <strong>HTML 标记</strong>，然后将 <code>meta</code> 标签的 <code>content</code> 属性值复制到主题配置文件中：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/google-verify-site.png" alt="Google 选择验证方式" title="Google 选择验证方式"></p>
-<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Google Webmaster tools verification setting</span></span><br><span class="line"><span class="comment"># See: https://www.google.com/webmasters/</span></span><br><span class="line"><span class="attr">google_site_verification:</span> <span class="string">cEGDN99xe2gtAy97He-NH4ihW3Y4GrGQl_xTxp7p3sg</span></span><br></pre></td></tr></table></figure>
-<p>执行 <code>hexo generate deploy</code> 重新部署站点，此时网站中就已经自动包含了用于验证身份的 <code>meta</code> 标签：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"google-site-verification"</span> <span class="attr">content</span>=<span class="string">"u9qDJxSM-SphoS5GXBhunqp1UXBY5H4FT6J1V2LxXqI"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<p>回到 Search Console 页面点击验证按钮，验证成功后将进入控制台，点击左侧 <strong>站点地图</strong> 菜单，在域名后输入 sitemap.xml 并提交，即可添加新的站点地图。</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/google-add-sitemap.png" alt="添加站点地图" title="添加站点地图"></p>
-<p>在新版的 Search Console 中只能添加站点地图，却没有删除站点地图的接口，后来在 <a href="https://www.dear.today/731.html" target="_blank" rel="noopener">Google Search Console 删除站点地图方法</a> 一文中发现了解决办法：需要在 <a href="www.google.com/webmasters/tools/sitemap-list">旧版 Search Console</a> 中才能删除。</p>
-<h3 id="百度"><a href="#百度" class="headerlink" title="百度"></a>百度</h3><p>在 <a href="https://ziyuan.baidu.com/site" target="_blank" rel="noopener">百度搜索资源平台</a> 中提交站点域名，勾选站点属性，最后一步中同样会要求验证网站的所有权身份，选择 <strong>HTML标签验证</strong>，然后将 <code>meta</code> 标签的 <code>content</code> 属性值复制到主题配置文件中：：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/baidu-verify-site.png" alt="Baidu 选择验证方式" title="Baidu 选择验证方式"></p>
-<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#  Webmaster tools verification setting</span></span><br><span class="line"><span class="comment"># See: https://ziyuan.baidu.com/site/</span></span><br><span class="line"><span class="attr">baidu_site_verification:</span> <span class="string">UHED80Nn65</span></span><br></pre></td></tr></table></figure>
-<p>执行 <code>hexo generate deploy</code> 重新部署站点，此时网站中就已经自动包含了用于验证身份的 <code>meta</code> 标签：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"baidu-site-verification"</span> <span class="attr">content</span>=<span class="string">"UHED80Nn65"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<p>回到百度站长管理平台点击完成验证按钮，验证成功后将进入控制台，在左侧 <strong>数据引入</strong> 菜单下点击 <strong>链接提交</strong>，在此可以看到除了sitemap之外还提供了多种推送站点内容的方案：</p>
-<ul>
-<li>主动推送：通过API接口推送站点内容，实时性较高</li>
-<li>自动推送：在网页内添加JS脚本，每当页面被访问的时候会将页面url推送给百度，比较被动</li>
-<li>sitemap：填写站点地图文件地址，百度会周期性的抓取其中的内容进行分析收录，收录效率比较低</li>
-<li>手动提交：手动填写链接地址进行收录</li>
-</ul>
-<p>本站采用主动推送和自动推送相结合的形式推送站点内容。</p>
-<h4 id="主动推送"><a href="#主动推送" class="headerlink" title="主动推送"></a>主动推送</h4><p>Hexo中可以借助 <a href="https://github.com/huiwang/hexo-baidu-url-submit" target="_blank" rel="noopener">hexo-baidu-url-submit</a> 插件快捷实现主动推送，在根目录下安装相关依赖：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-baidu-url-submit --save</span><br></pre></td></tr></table></figure>
-<p>在站点配置文件中添加以下代码：</p>
-<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># 百度主动推送</span></span><br><span class="line"><span class="attr">baidu_url_submit:</span></span><br><span class="line">  <span class="attr">count:</span> <span class="number">100</span>  <span class="comment"># 提交最新的一个链接</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">yearito.cn</span>  <span class="comment"># 在百度站长平台中注册的域名</span></span><br><span class="line">  <span class="attr">token:</span> <span class="string">xxxxx</span>  <span class="comment"># 请注意这是您的秘钥， 所以请不要把博客源代码发布在公众仓库里!</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">baidu_urls.txt</span>  <span class="comment"># 文本文档的地址， 新链接会保存在此文本文档里</span></span><br></pre></td></tr></table></figure>
-<p>然后在站点配置文件中修改部署策略：</p>
-<figure class="highlight diff"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line">  # Deployment</span><br><span class="line">  ## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line"><span class="deletion">- deploy:</span></span><br><span class="line"><span class="deletion">-   type: git</span></span><br><span class="line"><span class="deletion">-   repo: git@yearito.cn:~/blog.yearito.git</span></span><br><span class="line"><span class="addition">+ deploy:</span></span><br><span class="line"><span class="addition">+ - type: git</span></span><br><span class="line"><span class="addition">+   repo: git@yearito.cn:~/blog.yearito.git</span></span><br><span class="line"><span class="addition">+ - type: baidu_url_submitter # 百度</span></span><br></pre></td></tr></table></figure>
-<p>每次部署的时候将会自动推送网站内容到百度。</p>
-<h4 id="自动推送"><a href="#自动推送" class="headerlink" title="自动推送"></a>自动推送</h4><p>Next主题中内置了一键开启百度自动推送的选项：</p>
-<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Enable baidu push so that the blog will push the url to baidu automatically which is very helpful for SEO</span></span><br><span class="line"><span class="attr">baidu_push:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<p>开启后将会自动在页面中添加如下脚本用于百度推送：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> bp = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> curProtocol = <span class="built_in">window</span>.location.protocol.split(<span class="string">':'</span>)[<span class="number">0</span>];</span></span><br><span class="line"><span class="javascript">  <span class="keyword">if</span> (curProtocol === <span class="string">'https'</span>) &#123;</span></span><br><span class="line"><span class="javascript">    bp.src = <span class="string">'https://zz.bdstatic.com/linksubmit/push.js'</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="javascript">  <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">    bp.src = <span class="string">'http://push.zhanzhang.baidu.com/push.js'</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</span></span><br><span class="line">  s.parentNode.insertBefore(bp, s);</span><br><span class="line">&#125;)();</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>每次访问站点页面都会通过以上脚本推送本页url到百度。</p>
-<h3 id="必应"><a href="#必应" class="headerlink" title="必应"></a>必应</h3><p>在 <a href="https://www.bing.com/toolbox/webmaster" target="_blank" rel="noopener">必应网站管理员</a> 中提交站点域名，此时可以同时输入 sitemap 文件链接，然后同样会进入网站所有权验证页面，在选择二中复制 <code>meta</code> 标签的 <code>content</code> 属性值到主题配置文件中：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/bing-verify-site.png" alt="Bing 选择验证方式" title="Bing 选择验证方式"></p>
-<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Bing Webmaster tools verification setting</span></span><br><span class="line"><span class="comment"># See: https://www.bing.com/webmaster/</span></span><br><span class="line"><span class="attr">bing_site_verification:</span> <span class="string">538CCB61234CB4A0B1A71C4581705DCD</span></span><br></pre></td></tr></table></figure>
-<p>执行 <code>hexo generate deploy</code> 重新部署站点，此时网站中就已经自动包含了用于验证身份的 <code>meta</code> 标签：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"msvalidate.01"</span> <span class="attr">content</span>=<span class="string">"538CCB61234CB4A0B1A71C4581705DCD"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<p>回到网站管理员页面点击验证按钮，验证成功后将进入控制台，可以在左侧导航菜单中点击 <strong>仪表板</strong> -&gt; <strong>配置我的网站</strong> -&gt; <strong> Sitemaps</strong> 查看已提交的站点地图文件的解析抓取情况。</p>
-<h2 id="SEO"><a href="#SEO" class="headerlink" title="SEO"></a>SEO</h2><div class="note info"><p>本节参考 <a href="https://blog.paddings.cn/2016/08/16/blog/Hexo-NexT-SEO/" target="_blank" rel="noopener">Hexo NexT 主题SEO优化指南</a> 及<a href="https://sofree.cc/meta-keywords/" target="_blank" rel="noopener">SEO優化：不要使用Meta Keywords關鍵字</a></p></div>
-<p>SEO（Search Engine Optimization）意指搜索引擎优化，可以帮助提高目标网站在搜索引擎中的排名，使得在别人搜索相关内容的时候更容易脱颖而出被人所发现，以提高个人站点的存在价值。</p>
-<p>在Hexo中可以从以下几个方面进行简单的优化：</p>
-<ul>
-<li><p><strong>开启Next主题内置seo优化</strong></p>
-<p>在主题配置文件中设置 <code>seo: true</code>，将会自动部署Next内置的seo优化方案，比如在 themes\next\layout\_partials\footer.swig 为链接添加 <code>rel=&quot;external nofollow&quot;</code> 属性。</p>
-</li>
-<li><p><strong>修改文章url地址格式</strong></p>
-<p>默认的文章url地址为 <code>http://yoursite.com/:year/:month/:day/:title/</code>，这种url格式层级太多，并且如果文章标题是中文的话可能会发生转义而出现一堆乱码，不利于搜索引擎的爬取分析，因此建议在站点配置中修改 <code>permalink</code> 的格式来简化页面url，并尽量采用英文命名Markdown文件。</p>
-</li>
-</ul>
-<p>在一些SEO优化的教程中会提到通过为页面添加 keywords 来影响搜索结果排名，事实上，在早期搜索引擎技术发展尚未成熟的时候，这样的做法确实有效，但当人们发现了这个规律后，就开始添加甚至无关的keywords来影响搜索结果排名，这一标签的滥用极大的降低了搜索引擎的准确度。随后，各大搜索引擎纷纷宣布不再将keywords作为搜索排名权重因子。</p>
-<p>如Google就在2009年发布声明：<a href="https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html" target="_blank" rel="noopener">Google does not use the keywords meta tag in web ranking</a>。声明中表示Google不会将keywords标签作为网页排名的依据，未来也不会改变这一政策。部分原文摘录如下：</p>
-<blockquote>
-<p>Our web search (the well-known search at Google.com that hundreds of millions of people use each day) disregards keyword metatags completely. They simply don’t have any effect in our search ranking at present.</p>
-</blockquote>
-<blockquote>
-<p>Google has ignored the keywords meta tag for years and currently we see no need to change that policy.</p>
-</blockquote>
-<p>而Bing则表示过多的keywords会被作为垃圾讯号，可能导致你的网站被归类为垃圾网站，详见<a href="https://searchengineland.com/the-meta-keywords-tag-lives-at-bing-why-only-spammers-should-use-it-96874" target="_blank" rel="noopener">The Meta Keywords Tag Lives At Bing &amp; Why Only Spammers Should Use It</a>。</p>
-<p>说起keywords，不得不提到另外一个与之相关的meta标签description。那么description是否有助于提升搜索排名呢？Google仍然给出了否定的答案：</p>
-<blockquote>
-<p>Even though we sometimes use the description meta tag for the snippets we show, we still don’t use the description meta tag in our ranking.</p>
-</blockquote>
-<p>虽然description不影响搜索排名，但搜索引擎通常会将description作为快照显示在搜索结果页面作为内容补充，因此合适的description还是有助于吸引读者的目光增加网站的点击率的。</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/search-snapshot.png" alt="搜索结果快照" title="搜索结果快照"></p>
-<p>如果页面上没有description元标签的话，搜索引擎可能会从页面中自动抓取部分内容作为页面描述，至于说抓取质量可就没法保证了。</p>
-<p>默认情况下，Next会使用 tags 作为页面 keywords，使用文章前两百个字符作为description。如果文章页面内含有 <code>&lt;!-- more --&gt;</code> 内容分隔符，则会使用分隔符之前的正文 description。用户也可以在Front-Matter中添加 keywords 和 description属性来手动指定页面meta标签内容。</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/keywords-description.png" alt="keywords &amp; description" title="keywords &amp; description"></p>
-<p>越是容易被人为操控的SEO影响因子，影响力就会越来越低，所以：</p>
-<blockquote class="blockquote-center"><p>最好的SEO优化是做好内容，最好的加薪办法是做好工作。</p>
-</blockquote>
-<h1 id="404页面"><a href="#404页面" class="headerlink" title="404页面"></a>404页面</h1><p>Nginx默认的404页面有些简陋，这里有两种自定义404页面的方案。</p>
-<p><strong>第一种是仍沿用Hexo主题的页面框架，基于 page 布局搭建404页面。</strong></p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/404pages.png" alt="基于主题布局的404页面" title="基于主题布局的404页面"></p>
-<p>在 source 目录下新建 404.md 文件，添加如下内容：</p>
-<figure class="highlight html"><figcaption><span>source\404.md</span></figcaption><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">comments: false</span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"text-align:center; font-size: 36px"</span>&gt;</span></span><br><span class="line">  404 页面未找到</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn"</span> <span class="attr">onclick</span>=<span class="string">"window.history.back()"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-angle-double-left fa-fw fa-lg"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    返回</span><br><span class="line">  <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  &#123;% btn /, 首页, home fa-fw fa-lg %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>用户可以在此基础上自定义修改显示内容。</p>
-<p><strong>第二种是完全抛弃掉Hexo的框架，搭建一个纯粹的自定义 404 HTML 页面。</strong></p>
-<p>在 source 目录下新建 404.html 文件，自行编写页面结构与样式。你也可以直接在网上搜索404页面模板并下载使用，一般都不会太复杂，一个HTML文件就能搞定。例如 <a href="https://freefrontend.com/html-css-404-page-templates/" target="_blank" rel="noopener">28 HTML 404 Page Templates</a> 中就提供了很多精美的动态404页面。</p>
-<p>此时打包的时候Hexo仍会渲染该文件，添加上复杂的主题框架与功能，用户可以修改站点配置文件以跳过渲染该文件：</p>
-<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">skip_render:</span> <span class="number">404.</span><span class="string">html</span></span><br></pre></td></tr></table></figure>
-<p>这样以来Hexo在打包的时候就只是将该文件复制到 public 目录下，而不做任何处理了。</p>
-<p>以上仅仅是搭建起了404页面，至于如何在服务器返回404响应时重定向到该页面，还要依赖于Nginx的配置规则。修改VPS上的Nginx配置文件，添加一行404页面重定向规则：</p>
-<figure class="highlight diff"><figcaption><span>/etc/nginx/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">  http &#123;</span><br><span class="line">    include  mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    sendfile on;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">      listen  80;</span><br><span class="line">      root /var/www/blog.yearito;</span><br><span class="line"><span class="addition">+     error_page 404 /404.html;      </span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>修改后执行 <code>nginx -s reload</code> 重新加载配置文件即可生效。</p>
-<h1 id="RSS链接"><a href="#RSS链接" class="headerlink" title="RSS链接"></a>RSS链接</h1><p>什么是RSS，RSS有什么用？第一次在别人的博客搭建教程中了解到这个概念的时候，同样的问题也困扰着我。通过订阅网站RSS可以第一时间发现站点内容的更新，而不用自己跑到站点去刷新，这是一个轮询到通知的转变。</p>
-<div class="note "><p>虽然大致知道它的用途，但还是理解不够深刻，读者可以参考 <a href="http://www.ruanyifeng.com/blog/2006/01/rss.html" target="_blank" rel="noopener">如何使用RSS | 阮一峰</a> 来帮助理解这一概念。</p></div>
-<p>在站点根目录下执行以下命令安装相关依赖：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-feed --save</span><br></pre></td></tr></table></figure>
-<p>然后站点概览中就会自动出现feed链接：</p>
-<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/rss-feed.png" alt="站点 feed 链接" title="站点 feed 链接"></p>
-<p>在主题配置文件中不需要设置rss的值，置空即可，如果设置为 <code>true</code> 反而会导致如下报错：</p>
-<blockquote>
-<p><a href="https://github.com/iissnan/theme-next-docs/issues/99" target="_blank" rel="noopener">Unhandled rejection TypeError: path.substring is not a function</a></p>
-</blockquote>
-<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>本文介绍了在站点部署上线过程中将会遇到的各种技术问题，包括部署到VPS中的三步实现方案，优化页面加载性能的方法等。至此，Hexo搭建个人博客系列的最后一篇文章也已经完成，本站历经2个月的修修改改后也终于上线与大家见面了。如果你喜欢本站，可以在我的 <a href="http://github.com/Coodool/hexo-blog-yearito" target="_blank" rel="noopener">Github仓库</a> 上Fork或者Star。关于本系列文章如果有什么疑问与指正，也欢迎私信或者评论。</p>
-<div class="reference-linking">参考链接</div>
-
-<ul>
-<li><a href="https://blog.yizhilee.com/post/deploy-hexo-to-vps/" target="_blank" rel="noopener">荔枝 | 通过 Git Hooks 自动部署 Hexo 到 VPS</a></li>
-<li><a href="https://stackoverflow.com/questions/31729240/how-to-analyzing-page-speed-in-chrome-dev-tools" target="_blank" rel="noopener">How to analyzing Page Speed in Chrome Dev tools</a></li>
-<li><a href="https://segmentfault.com/q/1010000011840948/a-1020000011947156" target="_blank" rel="noopener">chrome devtools 中 network 一栏中的 Finish 时间代表着什么</a></li>
-<li><a href="https://help.hotjar.com/hc/en-us/articles/115009335727-Will-Hotjar-Slow-Down-My-Site-" target="_blank" rel="noopener">Will Hotjar Slow Down My Site?</a></li>
-<li><a href="https://juejin.im/post/590b451a0ce46300588c43a0" target="_blank" rel="noopener">hexo高阶教程：教你怎么让你的hexo博客在搜索引擎中排第一</a></li>
-<li><a href="https://blog.paddings.cn/2016/08/16/blog/Hexo-NexT-SEO/" target="_blank" rel="noopener">Hexo NexT 主题SEO优化指南</a></li>
-<li><a href="https://sofree.cc/meta-keywords/" target="_blank" rel="noopener">SEO優化：不要使用Meta Keywords關鍵字</a></li>
-<li><a href="https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html" target="_blank" rel="noopener">Google does not use the keywords meta tag in web ranking</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2006/01/rss.html" target="_blank" rel="noopener">如何使用RSS | 阮一峰</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1359,6 +1153,285 @@ warning: LF will be replaced by CRLF in tags/Hexo/index.html.</p>
       </tags>
   </entry>
   <entry>
+    <title>Hexo搭建个人博客系列：部署上线篇</title>
+    <url>/posts/hexo-deploy-to-VPS.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/dolphin.jpg!thumbnail" alt="题图" title="Photo by Felix Hernandez Dreamphography"></p>
+<p>本文主要介绍了在将Hexo博客部署上线过程中将会遇到的一系列问题。</p>
+<p>第一章主要介绍了将 Hexo 部署到 VPS 的方案，使得在本地推送更新后自动同步线上内容，部署过程主要分为三步走，首先从本地推送更新到远程仓库，然后触发 Git Hooks 将静态资源部署到 Web 根目录，最后启动 Nginx 服务器。</p>
+<p>第二章主要介绍了如何分析页面加载性能瓶颈，并提供了通过CDN和代码压缩合并等方法来优化页面加载速度的方案。</p>
+<p>第三章主要介绍了如何将站点提交到各大搜索引擎收录，并讨论了SEO相关话题。</p>
+<p>后续章节则零散的介绍了为站点添加404页面和RSS链接。</p>
+<a id="more"></a>
+<p>部署个人博客主要有两种方案，一种是托管到Github Pages上，一种是部署到自己的VPS上。</p>
+<p>对于Github Pages，优势在于完全免费，部署方便快捷，适用于新手，但一个Github账号只能用来部署一个个人站点。另外，Github服务器在国外，理论上从国内加载站点资源会有延迟，并且由于GFW的存在有时候可能访问不到站点。当然，可以通过Coding Pages来实现国内外双线部署来解决这个问题，详情可以参考网上相关教程。</p>
+<p>对于VPS，需要独立购买域名和服务器，还需要熟悉Linux系统的基本操作，但同时也提供了更广的自由度。本篇主要介绍使用VPS部署博客的方案。</p>
+<h1 id="VPS自动部署"><a href="#VPS自动部署" class="headerlink" title="VPS自动部署"></a>VPS自动部署</h1><div class="note info"><p>本章节参考 <a href="https://blog.yizhilee.com/post/deploy-hexo-to-vps/" target="_blank" rel="noopener">荔枝 | 通过 Git Hooks 自动部署 Hexo 到 VPS</a></p></div>
+<p>使用VPS部署博客的主要思路分为三步：</p>
+<ul>
+<li><code>hexo deploy</code> 的时候通过git把 public 目录下的博客静态资源推送到远程仓库中</li>
+<li>推送更新时触发 Git Hooks 将静态资源克隆到网站根目录下</li>
+<li>使用 nginx 作为Web服务器提供对博客的 HTTP 访问</li>
+</ul>
+<p>本文基于腾讯云 Ubuntu 16.04实现自动部署。</p>
+<h2 id="远程仓库推送"><a href="#远程仓库推送" class="headerlink" title="远程仓库推送"></a>远程仓库推送</h2><p>在推送静态资源之前需要做些准备工作，包括基于公钥的ssh通信以及VPS用户和权限管理。</p>
+<div class="note info"><p>在进行下一步操作之前请先确认本地已经安装了 <a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a> 和 <a href="https://nodejs.org/zh-cn/" target="_blank" rel="noopener">Node.js</a>。</p></div>
+<p>为什么要实现基于公钥的ssh通信？</p>
+<p>通常可以使用密码和公钥两种方式登陆VPS，如果在VPS上为某用户添加了授权公钥，则之后每次以该用户身份登陆或者获取授权就无须再重复输入密码了。<strong>Hexo的git自动部署插件不支持使用密码验证授权</strong>，所以要实现基于公钥的ssh通信。</p>
+<p>如果尚未生成ssh公钥对，执行如下命令生成新的公钥对：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>无须设置公钥密码，否则每次通过公钥登陆的时候都要输入密码。</p></div>
+<p>如果是Windows操作系统，此时会在 C:\Users\Username\.ssh\ 目录下生成密钥文件 id_rsa 和公钥文件 id_rsa.pub。</p>
+<p>腾讯云的默认登陆用户名为ubuntu，在设置根用户密码之前无法切换为根用户，可以通过 <code>sudo passwd</code> 命令来设置根用户密码，然后通过 <code>su</code> 命令切换到根用户身份。</p>
+<p>以管理员权限执行如下命令新建用户并设置密码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo adduser git</span><br><span class="line">$ sudo passwd git</span><br></pre></td></tr></table></figure>
+<p>这一步虽然不是必须的，但一般情况下都会单独新建git用户专用于git代码同步，并将远程仓库放在git用户目录下。</p>
+<p>为方便后续以git用户身份获取管理员权限来新建目录，此处为其添加管理员操作权限：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo gpasswd -a git sudo</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>该命令指的是将 git 用户添加到 sudo用户组中，也就使得git用户有了sudo用户组的操作权限。</p></div>
+<p>在本地Git Bash中执行如下命令将ssh公钥上传到VPS：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ssh-copy-id git@yearito.cn</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>该命令会自动把默认ssh公钥id_rsa.pub中的内容拷贝到git用户目录下的 .ssh/authorized_keys文件中。</p></div>
+<p>此时在本地cmd中用git用户登陆VPS将会直接成功登陆而无须输入密码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ssh git@yearito.cn</span><br></pre></td></tr></table></figure>
+<p>在git用户目录下执行如下命令创建远程仓库：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ mkdir blog.yearito.git</span><br><span class="line">$ cd blog.yearito.git</span><br><span class="line">$ git init --bare</span><br></pre></td></tr></table></figure>
+<p>在本地站点根目录下执行以下命令安装相关依赖：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<p>在本地站点配置文件中添加git远程仓库信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@yearito.cn:~/blog.yearito.git</span><br></pre></td></tr></table></figure>
+<p>此时在站点根目录下执行 <code>hexo deploy</code> 命令，如果最后一行出现如下提示：</p>
+<blockquote>
+<p><span style="color: green">INFO</span>  Deploy done: git</p>
+</blockquote>
+<p>则说明已经实现本地和VPS远程仓库之间的资源同步了。</p>
+<div class="note info"><p>需要注意的是，同步的仅是 public 目录下的静态资源文件，而非整个项目目录。</p></div>
+<p>如果在部署过程中出现如下提示：</p>
+<blockquote>
+<p>The file will have its original line endings in your working directory. <br>
+warning: LF will be replaced by CRLF in tags/Hexo/index.html.</p>
+</blockquote>
+<p>这是由 Windows 操作系统和 Linux 操作系统中行尾换行符不一致所引起的，可以通过执行 <code>git config core.autocrlf false</code> 来关闭告警。</p>
+<h2 id="Git-Hooks-拷贝资源"><a href="#Git-Hooks-拷贝资源" class="headerlink" title="Git Hooks 拷贝资源"></a>Git Hooks 拷贝资源</h2><p>此时VPS上的远程仓库只是一个裸仓库，无法用于搭建站点服务器。所以我们需要在推送更新的同时触发Git Hooks钩子，来从远程仓库中克隆出完整的博客资源放到Web服务器根目录下。</p>
+<p>首先创建Web根目录：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir /var/www/blog.yearito -p</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>其中，-p 参数表示若所要建立目录的上层目录目前尚未建立，则一并建立上层目录。</p></div>
+<p>然后改变Web根目录的所有者和所有工作组，以使git用户拥有对该目录的操作权限：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo chown git:git -R /var/www/blog.yearito</span><br></pre></td></tr></table></figure>
+<p>打开到远程仓库中的hooks目录下，默认该目录下是没有post-receive钩子文件的，直接通过 <code>vim post-receive</code> 新建该文件并添加以下代码：</p>
+<figure class="highlight bash"><figcaption><span>~/blog.yearito.git/hooks/post-receive</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"post-receive hook is running..."</span></span><br><span class="line"></span><br><span class="line">GIT_REPO=/home/git/blog.yearito.git</span><br><span class="line">TMP_GIT_CLONE=/tmp/blog.yearito</span><br><span class="line">PUBLIC_WWW=/var/www/blog.yearito</span><br><span class="line"></span><br><span class="line">rm -rf <span class="variable">$TMP_GIT_CLONE</span></span><br><span class="line">git <span class="built_in">clone</span> <span class="variable">$GIT_REPO</span> <span class="variable">$TMP_GIT_CLONE</span></span><br><span class="line">rm -rf <span class="variable">$&#123;PUBLIC_WWW&#125;</span>/*</span><br><span class="line">cp -rf <span class="variable">$&#123;TMP_GIT_CLONE&#125;</span>/* <span class="variable">$&#123;PUBLIC_WWW&#125;</span>/</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>为什么不直接将裸仓库克隆到Web根目录下呢？我之前也一直被这个问题困扰，感觉先克隆到 tmp 目录再拷贝到Web根目录是多此一举。后来我觉得可能是出于项目安全的考虑，在执行cp命令的时候，.git作为隐藏目录不会被拷贝到Web根目录下，也就避免了将整个仓库历史暴漏在Web服务中。</p></div>
+<p>输入 <code>:wq</code> 保存并退出，此时可以看到 post-receive 文件只有读写权限，没有执行权限：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/post-receive-before.png" alt="修改 post-receive 权限前" title="修改 post-receive 权限前"></p>
+<p>执行以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chmod +x post-receive</span><br></pre></td></tr></table></figure>
+<p>执行后可以看到 post-receive 已获得执行权限：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/post-receive-after.png" alt="修改 post-receive 权限后" title="修改 post-receive 权限后"></p>
+<p>然后在本地站点目录下执行 <code>hexo deploy -g</code>，如果出现我们之前设定好的 <code>remote: post-receive hook is running...</code> 提示，且没有其他权限错误，则说明钩子正确执行了，从远程仓库拷贝资源成功，此时打开 /var/www/blog.yearito/ 目录可以看到完整的博客静态资源文件。</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/auto-deploy-success.png" alt="Git Hooks 拷贝资源成功" title="Git Hooks 拷贝资源成功"></p>
+<h2 id="配置Nginx服务器"><a href="#配置Nginx服务器" class="headerlink" title="配置Nginx服务器"></a>配置Nginx服务器</h2><p>将静态资源部署到Web服务器根目录后，接下来要做就是通过配置Nginx来启动Web服务。</p>
+<p>切换到根用户并安装Nginx：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ apt-get install nginx</span><br></pre></td></tr></table></figure>
+<p>成功安装后可以通过 <code>nginx -v</code> 查看Nginx版本信息，以及可以通过 <code>service nginx status</code> 或者 <code>systemctl status nginx</code> 命令来查看Nginx运行状态。</p>
+<p>修改nginx配置文件内容，启动80端口的HTTP服务到Web根目录，此处提供最简配置作为参考，读者可以在此基础上自定义：</p>
+<figure class="highlight nginx"><figcaption><span>/etc/nginx/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attribute">user</span> www-data;</span><br><span class="line"><span class="attribute">worker_processes</span> auto;</span><br><span class="line"><span class="attribute">pid</span> /run/nginx.pid;</span><br><span class="line"></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">  <span class="attribute">worker_connections</span>  <span class="number">768</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">  <span class="attribute">include</span>  mime.types;</span><br><span class="line">  <span class="attribute">default_type</span>  application/octet-stream;</span><br><span class="line"></span><br><span class="line">  <span class="attribute">sendfile</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">  <span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>  <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">root</span> /var/www/blog.yearito;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时通过 <code>nginx -s reload</code> 重新加载配置文件，如果此前Nginx服务未启动，则直接执行 <code>nginx</code> 命令即可。</p>
+<p>执行以下命令设置Nginx开机自动启动：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ systemctl enable nginx</span><br></pre></td></tr></table></figure>
+<p>此外提供一些其他的Nginx语法命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nginx -s stop //强制关闭</span><br><span class="line">nginx -s quit //完成当前服务后关闭</span><br><span class="line">nginx -s reload //重新加载配置文件</span><br></pre></td></tr></table></figure>
+<p>在浏览器中输入VPS域名，即可打开个人博客站点，至此实现了在本地推送更新后自动同步部署线上站点内容的功能。</p>
+<h1 id="页面加载性能"><a href="#页面加载性能" class="headerlink" title="页面加载性能"></a>页面加载性能</h1><p>博客上线后，需要关注页面的加载速度。<a href="https://developers.google.com/speed/pagespeed/insights/" target="_blank" rel="noopener">Google PageSpeed Insights</a> 可用于帮助分析网页加载速度瓶颈，该网站将会针对指定域名进行在线测试，并提供一份详细的页面加载分析报告，报告中还会根据页面资源加载情况给出合理的优化建议及预期优化效果，因此用户可以有的放矢的进行性能优化专项整改。</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/pagespeed-insights.png" alt="Google PageSpeed Insights" title="Google Pagespeed Insights"></p>
+<p>虽然可以从报告中了解到站点的加载性能瓶颈，但是，报告中仅是提供优化建议，具体的落实还须自己实施。本章节主要介绍CDN加速和代码合并压缩两种比较常见的优化方案。</p>
+<h2 id="CDN加速"><a href="#CDN加速" class="headerlink" title="CDN加速"></a>CDN加速</h2><p>在控制台的Network Tab页中可以查看到页面加载瀑布流。在此需要勾选 Disable cache 以避免缓存干扰分析。另外，在所有静态资源中，对加载速度影响较大且存在大幅优化空间的主要还是JS脚本，所以我们先拿它开刀。</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/before-optimize.png" alt="页面加载瀑布流" title="页面加载瀑布流"></p>
+<p>首先理解一下底部信息栏中的这行文字：</p>
+<blockquote>
+<p><span style="font-family: Arial">21 / 50 requests | 518 KB / 818KB transferred | Finish: 8.44 s | <span style="color: blue">DOMContentLoaded: 4.36 s</span> | <span style="color: red">Load: 6.80 s</span></span></p>
+</blockquote>
+<p>主要包括以下几条信息：</p>
+<ul>
+<li>加载页面总共发起了50次请求，下载了818 KB资源，其中JS脚本资源共计518 KB，占据了21次请求。</li>
+<li>在 4.36 s 时DOM树渲染完毕（蓝线），此时已经可以看到正常的页面，由于JS脚本会阻塞DOM解析，所以这段时间是包含了JS脚本的下载与执行过程的。</li>
+<li>在 6.80 s 时所有资源加载完毕（红线），包括异步的脚本和其他非阻塞的页面资源，如图片、CSS文件等。</li>
+<li>在 8.44 s 时所有HTTP请求响应完毕，包括XHR请求。</li>
+</ul>
+<div class="note info"><p>关于 Finish / DOMContentLoaded / Load 的讨论请参见 <a href="https://stackoverflow.com/questions/31729240/how-to-analyzing-page-speed-in-chrome-dev-tools" target="_blank" rel="noopener">How to analyzing Page Speed in Chrome Dev tools</a> 和 <a href="https://segmentfault.com/q/1010000011840948/a-1020000011947156" target="_blank" rel="noopener">chrome devtools 中 network 一栏中的 Finish 时间代表着什么</a>，两者说法不一致，我倾向于认同后者的观点。</p></div>
+<p>分析以上页面加载瀑布流可知，DOM树的解析渲染主要是被从VPS本地下载 jquery、velocity、fancybox 等脚本所滞后，所以对症下药，我们可以改为从开源公共CDN加载脚本。</p>
+<p>对于在站点中用到的三方插件，在主题配置文件中为其添加CDN加载源：</p>
+<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">vendors:</span></span><br><span class="line">  <span class="attr">jquery:</span> <span class="string">//cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">fancybox:</span> <span class="string">https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.2/dist/jquery.fancybox.min.js</span></span><br><span class="line">  <span class="attr">fancybox_css:</span> <span class="string">https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.2/dist/jquery.fancybox.min.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">velocity:</span> <span class="string">https://cdn.jsdelivr.net/npm/velocity-animate@1.2.1/velocity.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">velocity_ui:</span> <span class="string">//cdn.jsdelivr.net/npm/velocity-animate@1.2.1/velocity.ui.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">fontawesome:</span> <span class="string">//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">algolia_instant_js:</span> <span class="string">https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.js</span></span><br><span class="line">  <span class="attr">algolia_instant_css:</span> <span class="string">https://cdn.jsdelivr.net/npm/instantsearch.js@2.4.1/dist/instantsearch.min.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">pace:</span> <span class="string">//cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js</span></span><br><span class="line">  <span class="attr">pace_css:</span> <span class="string">//cdn.jsdelivr.net/npm/pace-js@1.0.2/themes/blue/pace-theme-minimal.css</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">pangu:</span> <span class="string">//cdn.jsdelivr.net/npm/pangu@3.3.0/dist/browser/pangu.min.js</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">valine:</span> <span class="string">https://cdn.jsdelivr.net/npm/valine@1.3.3/dist/Valine.min.js</span></span><br></pre></td></tr></table></figure>
+<div class="note info"><p>主题配置文件中给出的CDN链接示例的版本可能已经落后很久了，请查找并使用最新版的插件CDN链接。</p></div>
+<p>比较常用的开源项目CDN服务商主要有unpkg、bootcdn、 cdnjs、jsdelivr 和 cloudflare，用户可以自行在浏览器中检测资源下载速度后做取舍。本站中主要使用 jsdelivr 提供的CDN加速服务。</p>
+<p>使用CDN加速后页面加载瀑布流如下：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/after-optimize.png" alt="CDN加载三方插件后的页面加载瀑布流" title="CDN加载三方插件后的页面加载瀑布流"></p>
+<p>DOM树的渲染完成时间缩减到了654 ms，<strong>也就是说刷新页面后654 ms后就可以看到页面内容了，相比优化前的4.36 s 有了极大的提升</strong>。</p>
+<p>如果开启了Live2D看板娘，一样可以通过将脚本来源改为CDN来完成性能优化：</p>
+<figure class="highlight diff"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line">  # Live2D</span><br><span class="line">  ## https://github.com/EYHN/hexo-helper-live2d</span><br><span class="line">  live2d:</span><br><span class="line">    enable: true</span><br><span class="line">    pluginRootPath: live2dw/ # Root path of plugin to be on the site (Relative)</span><br><span class="line">    pluginJsPath: lib/ # JavaScript path related to plugin's root (Relative)</span><br><span class="line">    pluginModelPath: assets/ # Relative model path related to plugin's root (Relative)</span><br><span class="line"><span class="deletion">-   scriptFrom: local # Default</span></span><br><span class="line"><span class="addition">+   scriptFrom: jsdelivr # jsdelivr CDN</span></span><br><span class="line">    tagMode: true # Whether only to replace live2d tag instead of inject to all pages</span><br><span class="line">    log: false # Whether to show logs in console</span><br><span class="line">    model:</span><br><span class="line">      use: live2d-widget-model-shizuku  # 萌系少女</span><br><span class="line">    display:</span><br><span class="line">      position: left</span><br><span class="line">      width: 100</span><br><span class="line">      height: 180</span><br><span class="line">    mobile:</span><br><span class="line">      show: false</span><br><span class="line">    react:</span><br><span class="line">      opacityDefault: 0.7 # 默认透明度</span><br></pre></td></tr></table></figure>
+<p>另外，我们注意到，处理 hotjar 的脚本共计耗时 5 s，那么该脚本是否影响到了页面加载性能呢？事实上没有，在HTML结构树中可以找到 hotjar 的脚本引入代码：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">async</span> <span class="attr">src</span>=<span class="string">"https://static.hotjar.com/c/hotjar-1061283.js?sv=6"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其中 <code>async</code> 属性意味着脚本将以异步形式加载，不会阻塞DOM树的解析和渲染。也就是说该脚本只使得 Load 的完成时间滞后，但没有影响到 DOMContentLoaded 的时间节点。</p>
+<p>关于 Hotjar 是否会使得站点加载变慢，Hotjar 官方给出否定的回应，理由如下：</p>
+<ul>
+<li>通过异步的方式加载脚本</li>
+<li>脚本使用CDN加速</li>
+<li>脚本合理利用了浏览器缓存</li>
+</ul>
+<div class="note info"><p>更多详情请参考 <a href="https://help.hotjar.com/hc/en-us/articles/115009335727-Will-Hotjar-Slow-Down-My-Site-" target="_blank" rel="noopener">Will Hotjar Slow Down My Site?</a></p></div>
+<p>除了可以使用CDN加速三方插件外，还可以使用CDN域名加速来加速站点静态资源，包括HTML文件、CSS样式、字体文件等，具体操作方案参考VPS服务商说明文档。</p>
+<p>CDN域名加速也有几个坑点：</p>
+<ul>
+<li>CDN缓存会导致更新站点后访问到的仍是旧版内容，需要等待缓存刷新后才能看到更新。</li>
+<li>加速后就不能通过该域名建立ssh连接了，此时 <code>hexo deploy</code> 将会出现端口连接超时，可以将远程仓库地址改为真实IP地址来确保推送成功。</li>
+</ul>
+<h2 id="代码合并压缩"><a href="#代码合并压缩" class="headerlink" title="代码合并压缩"></a>代码合并压缩</h2><p>另一种优化页面加载速度的方案是通过删除注释和空格、将长变量名改为短变量名等方式压缩代码体积，从而缩短资源下载时间。</p>
+<p><a href="https://github.com/chenzhutian/hexo-all-minifier" target="_blank" rel="noopener">hexo-all-minifier</a> 插件通过集成下列插件提供一站式的资源压缩服务：</p>
+<ul>
+<li><a href="https://github.com/hexojs/hexo-html-minifier" target="_blank" rel="noopener">hexo-html-minifier</a>: 基于 <a href="https://github.com/kangax/html-minifier" target="_blank" rel="noopener">HTMLMinifier</a> 提供 HTML 压缩服务。</li>
+<li><a href="https://github.com/hexojs/hexo-clean-css" target="_blank" rel="noopener">hexo-clean-css</a>: 基于 <a href="https://github.com/jakubpawlowicz/clean-css" target="_blank" rel="noopener">clean-css</a> 提供 CSS 压缩服务。</li>
+<li><a href="https://github.com/hexojs/hexo-uglify" target="_blank" rel="noopener">hexo-uglify</a>: 基于 <a href="http://lisperator.net/uglifyjs/" target="_blank" rel="noopener">UglifyJS</a> 提供 JS 压缩服务。</li>
+<li><a href="https://github.com/vseventer/hexo-imagemin" target="_blank" rel="noopener">hexo-imagemin</a>: 基于 <a href="https://github.com/imagemin/imagemin" target="_blank" rel="noopener">imagemin</a> 提供图片压缩服务。</li>
+</ul>
+<p>此外，该插件还可以把多个JS脚本拼接打包到一个文件中来减少HTTP请求次数，从而减少页面加载时间。</p>
+<p>该方案从理论上来讲是有效且可行的，但是和一般的大型软件项目不同，博客项目中的主要资源是Markdown文件解析后的HTML文件，其核心是文本内容而非逻辑代码，压缩空间极其有限，在实际应用过程中效果并不明显，所以本站也就没有应用该插件功能。</p>
+<h1 id="搜索引擎"><a href="#搜索引擎" class="headerlink" title="搜索引擎"></a>搜索引擎</h1><h2 id="提交网址"><a href="#提交网址" class="headerlink" title="提交网址"></a>提交网址</h2><div class="note info"><p>本节参考 <a href="https://juejin.im/post/590b451a0ce46300588c43a0" target="_blank" rel="noopener">hexo高阶教程：教你怎么让你的hexo博客在搜索引擎中排第一</a></p></div>
+<p>在搜索引擎中输入 site:yearito.cn，会发现暂时还搜不到自己的站点：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/google-search-result.png" alt="谷歌搜索结果" title="谷歌搜索结果"></p>
+<p>想要搜到自己的站点，首先要将个人网站提交给搜索引擎收录。针对不同的搜索引擎需要分别提交网址，但提交的步骤是大同小异的：</p>
+<p><strong>第一步：提交网站域名</strong></p>
+<p>注意需要区分输入 http 与 https。</p>
+<p><strong>第二步：验证网站所有权</strong></p>
+<p>一般都包括以下三种验证方法，其本质都是通过一段字符串验证码来验证用户的网站所有权，三种方法任选其一：</p>
+<ul>
+<li>HTML文件验证：将给定的HTML文件上传到站点根目录下（验证码包含在HTML文件中）</li>
+<li>HTML元标签验证：在站点首页中添加给定的 <code>meta</code> 标签（验证码包含在 <code>meta</code> 标签属性中）</li>
+<li>CNAME验证：添加一个CNAME域名解析记录到指定站点（验证码包含在二级域名中）</li>
+</ul>
+<p>Next主题中已经内置集成了各大搜索引擎的HTML元标签验证方案，用户只需获取验证码填写到主题配置文件中并重新打包部署即可完成身份验证。</p>
+<p><strong>第三步：推送或者提交 sitemap</strong></p>
+<p>sitemap，又称站点地图，通常是一个xml格式的文件，最早由谷歌提出，现已被多数引擎所支持。里面包含了站点内的页面列表，帮助搜索引擎理解网站内容的组织架构。</p>
+<p>在Hexo中可以通过 <a href="https://github.com/hexojs/hexo-generator-sitemap" target="_blank" rel="noopener">hexo-generator-sitemap</a> 和 <a href="https://github.com/coneycode/hexo-generator-baidu-sitemap" target="_blank" rel="noopener">hexo-generator-baidu-sitemap</a> 两个插件帮助生成通用站点地图和百度专用站点地图文件。</p>
+<p>在站点根目录下执行以下命令安装相关依赖：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-sitemap --save-dev</span><br><span class="line">$ npm install hexo-generator-baidu-sitemap --save-dev</span><br></pre></td></tr></table></figure>
+<p>之后在执行 <code>hexo generate</code> 打包后即可在 public 目录下找到 sitemap.xml 和 baidusitemap.xml 两个文件，将该文件提交到搜索引擎站长后台即可帮助搜索引擎分析收录站点内容，各个搜索引擎收录效率不同，可能需要耐心等上几天。</p>
+<h3 id="谷歌"><a href="#谷歌" class="headerlink" title="谷歌"></a>谷歌</h3><p>在 <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console</a> 中提交站点域名，此时会提供几种验证网站所有权的方法，展开 <strong>其他验证方法</strong> 中的 <strong>HTML 标记</strong>，然后将 <code>meta</code> 标签的 <code>content</code> 属性值复制到主题配置文件中：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/google-verify-site.png" alt="Google 选择验证方式" title="Google 选择验证方式"></p>
+<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Google Webmaster tools verification setting</span></span><br><span class="line"><span class="comment"># See: https://www.google.com/webmasters/</span></span><br><span class="line"><span class="attr">google_site_verification:</span> <span class="string">cEGDN99xe2gtAy97He-NH4ihW3Y4GrGQl_xTxp7p3sg</span></span><br></pre></td></tr></table></figure>
+<p>执行 <code>hexo generate deploy</code> 重新部署站点，此时网站中就已经自动包含了用于验证身份的 <code>meta</code> 标签：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"google-site-verification"</span> <span class="attr">content</span>=<span class="string">"u9qDJxSM-SphoS5GXBhunqp1UXBY5H4FT6J1V2LxXqI"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>回到 Search Console 页面点击验证按钮，验证成功后将进入控制台，点击左侧 <strong>站点地图</strong> 菜单，在域名后输入 sitemap.xml 并提交，即可添加新的站点地图。</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/google-add-sitemap.png" alt="添加站点地图" title="添加站点地图"></p>
+<p>在新版的 Search Console 中只能添加站点地图，却没有删除站点地图的接口，后来在 <a href="https://www.dear.today/731.html" target="_blank" rel="noopener">Google Search Console 删除站点地图方法</a> 一文中发现了解决办法：需要在 <a href="www.google.com/webmasters/tools/sitemap-list">旧版 Search Console</a> 中才能删除。</p>
+<h3 id="百度"><a href="#百度" class="headerlink" title="百度"></a>百度</h3><p>在 <a href="https://ziyuan.baidu.com/site" target="_blank" rel="noopener">百度搜索资源平台</a> 中提交站点域名，勾选站点属性，最后一步中同样会要求验证网站的所有权身份，选择 <strong>HTML标签验证</strong>，然后将 <code>meta</code> 标签的 <code>content</code> 属性值复制到主题配置文件中：：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/baidu-verify-site.png" alt="Baidu 选择验证方式" title="Baidu 选择验证方式"></p>
+<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#  Webmaster tools verification setting</span></span><br><span class="line"><span class="comment"># See: https://ziyuan.baidu.com/site/</span></span><br><span class="line"><span class="attr">baidu_site_verification:</span> <span class="string">UHED80Nn65</span></span><br></pre></td></tr></table></figure>
+<p>执行 <code>hexo generate deploy</code> 重新部署站点，此时网站中就已经自动包含了用于验证身份的 <code>meta</code> 标签：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"baidu-site-verification"</span> <span class="attr">content</span>=<span class="string">"UHED80Nn65"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>回到百度站长管理平台点击完成验证按钮，验证成功后将进入控制台，在左侧 <strong>数据引入</strong> 菜单下点击 <strong>链接提交</strong>，在此可以看到除了sitemap之外还提供了多种推送站点内容的方案：</p>
+<ul>
+<li>主动推送：通过API接口推送站点内容，实时性较高</li>
+<li>自动推送：在网页内添加JS脚本，每当页面被访问的时候会将页面url推送给百度，比较被动</li>
+<li>sitemap：填写站点地图文件地址，百度会周期性的抓取其中的内容进行分析收录，收录效率比较低</li>
+<li>手动提交：手动填写链接地址进行收录</li>
+</ul>
+<p>本站采用主动推送和自动推送相结合的形式推送站点内容。</p>
+<h4 id="主动推送"><a href="#主动推送" class="headerlink" title="主动推送"></a>主动推送</h4><p>Hexo中可以借助 <a href="https://github.com/huiwang/hexo-baidu-url-submit" target="_blank" rel="noopener">hexo-baidu-url-submit</a> 插件快捷实现主动推送，在根目录下安装相关依赖：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-baidu-url-submit --save</span><br></pre></td></tr></table></figure>
+<p>在站点配置文件中添加以下代码：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># 百度主动推送</span></span><br><span class="line"><span class="attr">baidu_url_submit:</span></span><br><span class="line">  <span class="attr">count:</span> <span class="number">100</span>  <span class="comment"># 提交最新的一个链接</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">yearito.cn</span>  <span class="comment"># 在百度站长平台中注册的域名</span></span><br><span class="line">  <span class="attr">token:</span> <span class="string">xxxxx</span>  <span class="comment"># 请注意这是您的秘钥， 所以请不要把博客源代码发布在公众仓库里!</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">baidu_urls.txt</span>  <span class="comment"># 文本文档的地址， 新链接会保存在此文本文档里</span></span><br></pre></td></tr></table></figure>
+<p>然后在站点配置文件中修改部署策略：</p>
+<figure class="highlight diff"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line">  # Deployment</span><br><span class="line">  ## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line"><span class="deletion">- deploy:</span></span><br><span class="line"><span class="deletion">-   type: git</span></span><br><span class="line"><span class="deletion">-   repo: git@yearito.cn:~/blog.yearito.git</span></span><br><span class="line"><span class="addition">+ deploy:</span></span><br><span class="line"><span class="addition">+ - type: git</span></span><br><span class="line"><span class="addition">+   repo: git@yearito.cn:~/blog.yearito.git</span></span><br><span class="line"><span class="addition">+ - type: baidu_url_submitter # 百度</span></span><br></pre></td></tr></table></figure>
+<p>每次部署的时候将会自动推送网站内容到百度。</p>
+<h4 id="自动推送"><a href="#自动推送" class="headerlink" title="自动推送"></a>自动推送</h4><p>Next主题中内置了一键开启百度自动推送的选项：</p>
+<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Enable baidu push so that the blog will push the url to baidu automatically which is very helpful for SEO</span></span><br><span class="line"><span class="attr">baidu_push:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>开启后将会自动在页面中添加如下脚本用于百度推送：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> bp = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> curProtocol = <span class="built_in">window</span>.location.protocol.split(<span class="string">':'</span>)[<span class="number">0</span>];</span></span><br><span class="line"><span class="javascript">  <span class="keyword">if</span> (curProtocol === <span class="string">'https'</span>) &#123;</span></span><br><span class="line"><span class="javascript">    bp.src = <span class="string">'https://zz.bdstatic.com/linksubmit/push.js'</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="javascript">  <span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">    bp.src = <span class="string">'http://push.zhanzhang.baidu.com/push.js'</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</span></span><br><span class="line">  s.parentNode.insertBefore(bp, s);</span><br><span class="line">&#125;)();</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>每次访问站点页面都会通过以上脚本推送本页url到百度。</p>
+<h3 id="必应"><a href="#必应" class="headerlink" title="必应"></a>必应</h3><p>在 <a href="https://www.bing.com/toolbox/webmaster" target="_blank" rel="noopener">必应网站管理员</a> 中提交站点域名，此时可以同时输入 sitemap 文件链接，然后同样会进入网站所有权验证页面，在选择二中复制 <code>meta</code> 标签的 <code>content</code> 属性值到主题配置文件中：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/bing-verify-site.png" alt="Bing 选择验证方式" title="Bing 选择验证方式"></p>
+<figure class="highlight yaml"><figcaption><span>themes\next\_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Bing Webmaster tools verification setting</span></span><br><span class="line"><span class="comment"># See: https://www.bing.com/webmaster/</span></span><br><span class="line"><span class="attr">bing_site_verification:</span> <span class="string">538CCB61234CB4A0B1A71C4581705DCD</span></span><br></pre></td></tr></table></figure>
+<p>执行 <code>hexo generate deploy</code> 重新部署站点，此时网站中就已经自动包含了用于验证身份的 <code>meta</code> 标签：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"msvalidate.01"</span> <span class="attr">content</span>=<span class="string">"538CCB61234CB4A0B1A71C4581705DCD"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>回到网站管理员页面点击验证按钮，验证成功后将进入控制台，可以在左侧导航菜单中点击 <strong>仪表板</strong> -&gt; <strong>配置我的网站</strong> -&gt; <strong> Sitemaps</strong> 查看已提交的站点地图文件的解析抓取情况。</p>
+<h2 id="SEO"><a href="#SEO" class="headerlink" title="SEO"></a>SEO</h2><div class="note info"><p>本节参考 <a href="https://blog.paddings.cn/2016/08/16/blog/Hexo-NexT-SEO/" target="_blank" rel="noopener">Hexo NexT 主题SEO优化指南</a> 及<a href="https://sofree.cc/meta-keywords/" target="_blank" rel="noopener">SEO優化：不要使用Meta Keywords關鍵字</a></p></div>
+<p>SEO（Search Engine Optimization）意指搜索引擎优化，可以帮助提高目标网站在搜索引擎中的排名，使得在别人搜索相关内容的时候更容易脱颖而出被人所发现，以提高个人站点的存在价值。</p>
+<p>在Hexo中可以从以下几个方面进行简单的优化：</p>
+<ul>
+<li><p><strong>开启Next主题内置seo优化</strong></p>
+<p>在主题配置文件中设置 <code>seo: true</code>，将会自动部署Next内置的seo优化方案，比如在 themes\next\layout\_partials\footer.swig 为链接添加 <code>rel=&quot;external nofollow&quot;</code> 属性。</p>
+</li>
+<li><p><strong>修改文章url地址格式</strong></p>
+<p>默认的文章url地址为 <code>http://yoursite.com/:year/:month/:day/:title/</code>，这种url格式层级太多，并且如果文章标题是中文的话可能会发生转义而出现一堆乱码，不利于搜索引擎的爬取分析，因此建议在站点配置中修改 <code>permalink</code> 的格式来简化页面url，并尽量采用英文命名Markdown文件。</p>
+</li>
+</ul>
+<p>在一些SEO优化的教程中会提到通过为页面添加 keywords 来影响搜索结果排名，事实上，在早期搜索引擎技术发展尚未成熟的时候，这样的做法确实有效，但当人们发现了这个规律后，就开始添加甚至无关的keywords来影响搜索结果排名，这一标签的滥用极大的降低了搜索引擎的准确度。随后，各大搜索引擎纷纷宣布不再将keywords作为搜索排名权重因子。</p>
+<p>如Google就在2009年发布声明：<a href="https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html" target="_blank" rel="noopener">Google does not use the keywords meta tag in web ranking</a>。声明中表示Google不会将keywords标签作为网页排名的依据，未来也不会改变这一政策。部分原文摘录如下：</p>
+<blockquote>
+<p>Our web search (the well-known search at Google.com that hundreds of millions of people use each day) disregards keyword metatags completely. They simply don’t have any effect in our search ranking at present.</p>
+</blockquote>
+<blockquote>
+<p>Google has ignored the keywords meta tag for years and currently we see no need to change that policy.</p>
+</blockquote>
+<p>而Bing则表示过多的keywords会被作为垃圾讯号，可能导致你的网站被归类为垃圾网站，详见<a href="https://searchengineland.com/the-meta-keywords-tag-lives-at-bing-why-only-spammers-should-use-it-96874" target="_blank" rel="noopener">The Meta Keywords Tag Lives At Bing &amp; Why Only Spammers Should Use It</a>。</p>
+<p>说起keywords，不得不提到另外一个与之相关的meta标签description。那么description是否有助于提升搜索排名呢？Google仍然给出了否定的答案：</p>
+<blockquote>
+<p>Even though we sometimes use the description meta tag for the snippets we show, we still don’t use the description meta tag in our ranking.</p>
+</blockquote>
+<p>虽然description不影响搜索排名，但搜索引擎通常会将description作为快照显示在搜索结果页面作为内容补充，因此合适的description还是有助于吸引读者的目光增加网站的点击率的。</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/search-snapshot.png" alt="搜索结果快照" title="搜索结果快照"></p>
+<p>如果页面上没有description元标签的话，搜索引擎可能会从页面中自动抓取部分内容作为页面描述，至于说抓取质量可就没法保证了。</p>
+<p>默认情况下，Next会使用 tags 作为页面 keywords，使用文章前两百个字符作为description。如果文章页面内含有 <code>&lt;!-- more --&gt;</code> 内容分隔符，则会使用分隔符之前的正文 description。用户也可以在Front-Matter中添加 keywords 和 description属性来手动指定页面meta标签内容。</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/keywords-description.png" alt="keywords &amp; description" title="keywords &amp; description"></p>
+<p>越是容易被人为操控的SEO影响因子，影响力就会越来越低，所以：</p>
+<blockquote class="blockquote-center"><p>最好的SEO优化是做好内容，最好的加薪办法是做好工作。</p>
+</blockquote>
+<h1 id="404页面"><a href="#404页面" class="headerlink" title="404页面"></a>404页面</h1><p>Nginx默认的404页面有些简陋，这里有两种自定义404页面的方案。</p>
+<p><strong>第一种是仍沿用Hexo主题的页面框架，基于 page 布局搭建404页面。</strong></p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/404pages.png" alt="基于主题布局的404页面" title="基于主题布局的404页面"></p>
+<p>在 source 目录下新建 404.md 文件，添加如下内容：</p>
+<figure class="highlight html"><figcaption><span>source\404.md</span></figcaption><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">comments: false</span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"text-align:center; font-size: 36px"</span>&gt;</span></span><br><span class="line">  404 页面未找到</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">"text-align:center"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"btn"</span> <span class="attr">onclick</span>=<span class="string">"window.history.back()"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-angle-double-left fa-fw fa-lg"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">    返回</span><br><span class="line">  <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  &#123;% btn /, 首页, home fa-fw fa-lg %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>用户可以在此基础上自定义修改显示内容。</p>
+<p><strong>第二种是完全抛弃掉Hexo的框架，搭建一个纯粹的自定义 404 HTML 页面。</strong></p>
+<p>在 source 目录下新建 404.html 文件，自行编写页面结构与样式。你也可以直接在网上搜索404页面模板并下载使用，一般都不会太复杂，一个HTML文件就能搞定。例如 <a href="https://freefrontend.com/html-css-404-page-templates/" target="_blank" rel="noopener">28 HTML 404 Page Templates</a> 中就提供了很多精美的动态404页面。</p>
+<p>此时打包的时候Hexo仍会渲染该文件，添加上复杂的主题框架与功能，用户可以修改站点配置文件以跳过渲染该文件：</p>
+<figure class="highlight yaml"><figcaption><span>_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">skip_render:</span> <span class="number">404.</span><span class="string">html</span></span><br></pre></td></tr></table></figure>
+<p>这样以来Hexo在打包的时候就只是将该文件复制到 public 目录下，而不做任何处理了。</p>
+<p>以上仅仅是搭建起了404页面，至于如何在服务器返回404响应时重定向到该页面，还要依赖于Nginx的配置规则。修改VPS上的Nginx配置文件，添加一行404页面重定向规则：</p>
+<figure class="highlight diff"><figcaption><span>/etc/nginx/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">  http &#123;</span><br><span class="line">    include  mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    sendfile on;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">      listen  80;</span><br><span class="line">      root /var/www/blog.yearito;</span><br><span class="line"><span class="addition">+     error_page 404 /404.html;      </span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>修改后执行 <code>nginx -s reload</code> 重新加载配置文件即可生效。</p>
+<h1 id="RSS链接"><a href="#RSS链接" class="headerlink" title="RSS链接"></a>RSS链接</h1><p>什么是RSS，RSS有什么用？第一次在别人的博客搭建教程中了解到这个概念的时候，同样的问题也困扰着我。通过订阅网站RSS可以第一时间发现站点内容的更新，而不用自己跑到站点去刷新，这是一个轮询到通知的转变。</p>
+<div class="note "><p>虽然大致知道它的用途，但还是理解不够深刻，读者可以参考 <a href="http://www.ruanyifeng.com/blog/2006/01/rss.html" target="_blank" rel="noopener">如何使用RSS | 阮一峰</a> 来帮助理解这一概念。</p></div>
+<p>在站点根目录下执行以下命令安装相关依赖：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-feed --save</span><br></pre></td></tr></table></figure>
+<p>然后站点概览中就会自动出现feed链接：</p>
+<p><img src="http://yearito-1256884783.image.myqcloud.com/hexo-deploy-to-VPS/rss-feed.png" alt="站点 feed 链接" title="站点 feed 链接"></p>
+<p>在主题配置文件中不需要设置rss的值，置空即可，如果设置为 <code>true</code> 反而会导致如下报错：</p>
+<blockquote>
+<p><a href="https://github.com/iissnan/theme-next-docs/issues/99" target="_blank" rel="noopener">Unhandled rejection TypeError: path.substring is not a function</a></p>
+</blockquote>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>本文介绍了在站点部署上线过程中将会遇到的各种技术问题，包括部署到VPS中的三步实现方案，优化页面加载性能的方法等。至此，Hexo搭建个人博客系列的最后一篇文章也已经完成，本站历经2个月的修修改改后也终于上线与大家见面了。如果你喜欢本站，可以在我的 <a href="http://github.com/Coodool/hexo-blog-yearito" target="_blank" rel="noopener">Github仓库</a> 上Fork或者Star。关于本系列文章如果有什么疑问与指正，也欢迎私信或者评论。</p>
+<div class="reference-linking">参考链接</div>
+
+<ul>
+<li><a href="https://blog.yizhilee.com/post/deploy-hexo-to-vps/" target="_blank" rel="noopener">荔枝 | 通过 Git Hooks 自动部署 Hexo 到 VPS</a></li>
+<li><a href="https://stackoverflow.com/questions/31729240/how-to-analyzing-page-speed-in-chrome-dev-tools" target="_blank" rel="noopener">How to analyzing Page Speed in Chrome Dev tools</a></li>
+<li><a href="https://segmentfault.com/q/1010000011840948/a-1020000011947156" target="_blank" rel="noopener">chrome devtools 中 network 一栏中的 Finish 时间代表着什么</a></li>
+<li><a href="https://help.hotjar.com/hc/en-us/articles/115009335727-Will-Hotjar-Slow-Down-My-Site-" target="_blank" rel="noopener">Will Hotjar Slow Down My Site?</a></li>
+<li><a href="https://juejin.im/post/590b451a0ce46300588c43a0" target="_blank" rel="noopener">hexo高阶教程：教你怎么让你的hexo博客在搜索引擎中排第一</a></li>
+<li><a href="https://blog.paddings.cn/2016/08/16/blog/Hexo-NexT-SEO/" target="_blank" rel="noopener">Hexo NexT 主题SEO优化指南</a></li>
+<li><a href="https://sofree.cc/meta-keywords/" target="_blank" rel="noopener">SEO優化：不要使用Meta Keywords關鍵字</a></li>
+<li><a href="https://webmasters.googleblog.com/2009/09/google-does-not-use-keywords-meta-tag.html" target="_blank" rel="noopener">Google does not use the keywords meta tag in web ranking</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2006/01/rss.html" target="_blank" rel="noopener">如何使用RSS | 阮一峰</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo搭建个人博客系列：基础建站篇</title>
     <url>/posts/hexo-get-started.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/forest.jpg!thumbnail" alt="题图" title="Photo by Ronald Jansen"></p>
@@ -1657,188 +1730,6 @@ warning: LF will be replaced by CRLF in tags/Hexo/index.html.</p>
       </tags>
   </entry>
   <entry>
-    <title>如何规范化 commit 信息</title>
-    <url>/posts/how-to-normalize-commit.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>最近在考虑如何规范化团队成员的提交信息与发布流程，包括以下一些具体的需求：</p>
-<ul>
-<li>规范 commit 信息的格式</li>
-<li>版本迭代时自动打 Tag 并生成 CHAGNELOG</li>
-</ul>
-<a id="more"></a>
-<h1 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h1><p>在项目中，我们遵循以下规范：</p>
-<h2 id="语义化版本"><a href="#语义化版本" class="headerlink" title="语义化版本"></a>语义化版本</h2><div class="note info"><p>参考规范：<a href="https://semver.org" target="_blank" rel="noopener">Semantic Versioning 2.0.0</a></p></div>
-<p>版本格式为：主版本号.次版本号.修订号，版本号递增规则如下：</p>
-<ol>
-<li>主版本号 [MAJOR]：当你做了不兼容的 API 修改，</li>
-<li>次版本号 [MINOR]：当你做了向下兼容的功能性新增，</li>
-<li>修订号 [PATCH]：当你做了向下兼容的问题修正。
-先行版本号及版本编译元数据可以加到“主版本号.次版本号.修订号”的后面，作为延伸。</li>
-</ol>
-<h2 id="提交信息规范"><a href="#提交信息规范" class="headerlink" title="提交信息规范"></a>提交信息规范</h2><p>目前社区使用最广泛的的 commit message 规范是 Conventional Commits，由 Angular Commit 规范演变而来。</p>
-<!-- 并且配备了非常全的工具：从 git commit 命令行工具 commitizen，到自动生成 CHAGNELOG 文件，以及 commitlint 规范验证工具，覆盖非常全面。 -->
-<div class="note info"><p>参考规范：<a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank" rel="noopener">Conventional Commits 1.0.0</a></p></div>
-<p>提交信息的内容结构如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;type&gt;[optinal scope]: &lt;description&gt;</span><br><span class="line"></span><br><span class="line">[optinal body]</span><br><span class="line"></span><br><span class="line">[optional footer(s)</span><br></pre></td></tr></table></figure>
-<p>提交信息的编写规范如下：</p>
-<ol>
-<li>fix 类型的提交表示在代码库中修复了一个 bug（和语义化版本中的 <code>PATCH</code> 相对应）。</li>
-<li>feat 类型的提交表示在代码库中新增了一个功能（和语义化版本中的 <code>MINOR</code> 相对应）。</li>
-<li>在正文或脚注的起始位置带有 <code>BREAKING CHANGE</code> 表示引入了破坏性 API 变更（和语义化版本中的 <code>MAJOR</code> 相对应）。</li>
-<li>允许除 fix 和 feat 外的其他类型，如基于 <a href="https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines" target="_blank" rel="noopener">Angular convention</a> 的 <a href="https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional" target="_blank" rel="noopener">@commitlint/config-conventional</a> 就推荐了 <code>build</code> <code>chore</code> <code>ci</code> <code>docs</code> <code>style</code> <code>refactor</code> <code>perf</code> <code>test</code> 等类型。</li>
-</ol>
-<p>额外的类型并非是由 conventional commits 强制约束的，并且对于语义化版本无影响（除非包含 BREAKING CHANGE）。</p>
-<p>为什么使用 conventional commits？</p>
-<ul>
-<li>自动化生成 CHAGNELOG。</li>
-<li>基于提交的类型，自动决定语义化的版本变更。</li>
-<li>向同事、公众与其他利益关系者传达变化的性质。</li>
-<li>触发构建和部署流程。</li>
-<li>让提交历史更加结构化，以便人们对你的项目做出贡献。</li>
-</ul>
-<p>说完了规范，我们需要了解如何确保规范 <strong>高效</strong>、<strong>准确</strong> 的执行。</p>
-<p>以我们团队目前的现状为例：</p>
-<ol>
-<li>虽然提出了 commit 信息的提交规范，但在执行上还是不彻底，如经常出现中英文冒号混用的情况</li>
-<li>迭代版本号由人工计算，容易出现纰漏</li>
-<li>每次版本迭代时需要手动整理 commit 信息来生成 ChangeLog</li>
-</ol>
-<p>所以，在敏捷的开发流程中，一切能够被自动化所取代的人工，都应该被取代。</p>
-<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LGsE7zdvzHI5cG-XV6p%2F-LgZJHU7wjHywLK9p0Mz%2F-LSqFWM0RYcz0dv1n7Oc%2Fbender.png?generation=1559682450938503&amp;alt=media" alt></p>
-<h1 id="约束提交信息"><a href="#约束提交信息" class="headerlink" title="约束提交信息"></a>约束提交信息</h1><p>明文约定是最简单的规范约束了，可以将提交规范写在 <code>CONTRIBUTING.md</code> 中，也可以写在 commit template 中，但这种方案依赖于主观意识，约束力很弱，所以有必要借助工具来强制执行。</p>
-<h2 id="借助工具规范化提交"><a href="#借助工具规范化提交" class="headerlink" title="借助工具规范化提交"></a>借助工具规范化提交</h2><p><a href="https://github.com/commitizen/cz-cli" target="_blank" rel="noopener">commitizen</a> 是最常用的规范化提交工具，它提供的 <code>git cz</code> 命令可以取代 <code>git commit</code> 命令，来接管你的提交流程，并引导你完成一次合格的符合规范的代码提交。</p>
-<p>首先全局安装 commitizen 命令行工具：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install -g commitizen</span><br></pre></td></tr></table></figure>
-<p>然后我们需要选择适配器（Adaptor），也即是指定具体的提交规范。举个例子，如果我们的项目要采用 AngularJS 的提交规范，那么我们需要安装如下适配器：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</span><br></pre></td></tr></table></figure>
-<p>这行命令将会做三件事：</p>
-<ol>
-<li>安装 <code>cz-conventional-changelog</code> 适配器</li>
-<li>将依赖关系保存在 <code>package.json</code> 中</li>
-<li>在 <code>package.json</code> 添加跟属性，如下：</li>
-</ol>
-<figure class="highlight js"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">"config"</span>: &#123;</span><br><span class="line">  <span class="string">"commitizen"</span>: &#123;</span><br><span class="line">    <span class="string">"path"</span>: <span class="string">"cz-conventional-changelog"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>此时执行 <code>git cz</code> 命令即可看到 conventional-changelog 适配器已经生效了：</p>
-<p><img src="http://qiniu.yearito.cn/how-to-normalize-commit/commitizen.jpg" alt></p>
-<h2 id="可定制的适配器"><a href="#可定制的适配器" class="headerlink" title="可定制的适配器"></a>可定制的适配器</h2><p>如果不习惯于 AngularJS 的这套规范，那么我们可以选择 <a href="https://github.com/leonardoanalista/cz-customizable" target="_blank" rel="noopener">cz-customizable</a> 适配器，通过修改配置文件的方式来制定符合本团队的的提交规范。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev cz-customizable</span><br></pre></td></tr></table></figure>
-<p>修改配置文件以使用 <code>cz-customizable</code> 作为适配器：</p>
-<figure class="highlight js"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">"config"</span>: &#123;</span><br><span class="line">  <span class="string">"commitizen"</span>: &#123;</span><br><span class="line">    <span class="string">"path"</span>: <span class="string">"node_modules/cz-customizable"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在项目根目录下新建 <code>.cz-config.js</code> 文件作为规范配置文件，并在 <a href="https://github.com/leonardoanalista/cz-customizable/blob/master/cz-config-EXAMPLE.js" target="_blank" rel="noopener">官方案例</a> 的基础上进行修改（<a href="https://github.com/leonardoanalista/cz-customizable#options" target="_blank" rel="noopener">配置选项释义</a>）：</p>
-<figure class="highlight js"><figcaption><span>.cz-config.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  types: [</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"feat"</span>, <span class="attr">name</span>: <span class="string">"✨ feat: A new feature"</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"fix"</span>, <span class="attr">name</span>: <span class="string">"🐞 fix: A bug fix"</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"docs"</span>, <span class="attr">name</span>: <span class="string">"📖 docs: Documentation only changes"</span> &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"style"</span>,</span><br><span class="line">      name:</span><br><span class="line">        <span class="string">"👚 style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"refactor"</span>,</span><br><span class="line">      name:</span><br><span class="line">        <span class="string">"🛠 refactor: A code change that neither fixes a bug nor adds a feature"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"perf"</span>,</span><br><span class="line">      name: <span class="string">"🚀 perf: A code change that improves performance"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"test"</span>, <span class="attr">name</span>: <span class="string">"💊 test: Adding missing tests"</span> &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"chore"</span>,</span><br><span class="line">      name:</span><br><span class="line">        <span class="string">"🗯 chore: Changes to the build process or auxiliary tools and libraries such as documentation generation"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"revert"</span>, <span class="attr">name</span>: <span class="string">"⏪ revert: Revert to a commit"</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"WIP"</span>, <span class="attr">name</span>: <span class="string">"💪 WIP: Work in progress"</span> &#125;</span><br><span class="line">  ],</span><br><span class="line"></span><br><span class="line">  scopes: [],</span><br><span class="line"></span><br><span class="line">  allowTicketNumber: <span class="literal">false</span>,</span><br><span class="line">  isTicketNumberRequired: <span class="literal">false</span>,</span><br><span class="line">  ticketNumberPrefix: <span class="string">"ISSUES-CLOSED"</span>,</span><br><span class="line">  ticketNumberRegExp: <span class="string">"\\d&#123;1,5&#125;"</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// override the messages, defaults are as follows</span></span><br><span class="line">  messages: &#123;</span><br><span class="line">    type: <span class="string">"Select the type of change that you're committing:"</span>,</span><br><span class="line">    scope: <span class="string">"\nDenote the SCOPE of this change (optional):"</span>,</span><br><span class="line">    <span class="comment">// used if allowCustomScopes is true</span></span><br><span class="line">    customScope: <span class="string">"Denote the SCOPE of this change:"</span>,</span><br><span class="line">    subject: <span class="string">"Write a SHORT, IMPERATIVE tense description of the change:\n"</span>,</span><br><span class="line">    body:</span><br><span class="line">      <span class="string">'Provide a LONGER description of the change (optional). Use "|" to break new line:\n'</span>,</span><br><span class="line">    breaking: <span class="string">"List any BREAKING CHANGES (optional):\n"</span>,</span><br><span class="line">    footer:</span><br><span class="line">      <span class="string">"List any ISSUES CLOSED by this change (optional). E.g.: #31, #34:\n"</span>,</span><br><span class="line">    confirmCommit: <span class="string">"Are you sure you want to proceed with the commit above?"</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  allowCustomScopes: <span class="literal">true</span>,</span><br><span class="line">  allowBreakingChanges: [<span class="string">"feat"</span>, <span class="string">"fix"</span>],</span><br><span class="line">  <span class="comment">// skip any questions you want</span></span><br><span class="line">  skipQuestions: [<span class="string">"scope"</span>, <span class="string">"customScope"</span>, <span class="string">"body"</span>],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// limit subject length</span></span><br><span class="line">  subjectLimit: <span class="number">100</span></span><br><span class="line">  <span class="comment">// breaklineChar: '|', // It is supported for fields body and footer.</span></span><br><span class="line">  <span class="comment">// footerPrefix : 'ISSUES CLOS  ED:'</span></span><br><span class="line">  <span class="comment">// askForBreakingChangeFirst : true, // default is false</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="自定义适配器"><a href="#自定义适配器" class="headerlink" title="自定义适配器"></a>自定义适配器</h2><p>如果连自定义适配器都无法满足你的需求了，则可以考虑自己写一个适配器。</p>
-<p>先随便 fork 一个适配器到本地，如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:Coodool/cz-conventional-changelog.git</span><br></pre></td></tr></table></figure>
-<p>根据业务修改 <code>engine.js</code> 中的各项交互细节和提交规范，发布到 npm 中，然后就和使用其他适配器的方法一样了。</p>
-<h2 id="内置到-git-工作流中"><a href="#内置到-git-工作流中" class="headerlink" title="内置到 git 工作流中"></a>内置到 git 工作流中</h2><p>使用 <code>git cz</code> 来替代 <code>git commit</code>，看起来不太优雅，有没有办法在通过 <code>git commit</code> 提交的时候也能启动 <code>commitizen</code> 呢？这样一来，就能确保所有的提交者都必须通过 <code>commitizen</code> 来提交了。</p>
-<p>我们可以通过 git hooks 和 <code>--hook</code> 选项来介入到提交信息流程中，将 <code>commitizen</code> 合并到原生的 git 工作流中。这里有两个方案可供选择：</p>
-<h3 id="git-hooks"><a href="#git-hooks" class="headerlink" title="git hooks"></a>git hooks</h3><figure class="highlight bash"><figcaption><span>.git/hooks/prepare-commit-msg</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">+ <span class="built_in">exec</span> &lt; /dev/tty &amp;&amp; node_modules/.bin/git-cz --hook || <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-<h3 id="Husky"><a href="#Husky" class="headerlink" title="Husky"></a>Husky</h3><p><a href="https://github.com/typicode/husky" target="_blank" rel="noopener">Husky</a> 提供了一种更方便的处理 git hooks 的方式：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev husky</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">"husky"</span>: &#123;</span><br><span class="line">  <span class="string">"hooks"</span>: &#123;</span><br><span class="line">    <span class="string">"prepare-commit-msg"</span>: <span class="string">"exec &lt; /dev/tty &amp;&amp; git cz --hook || true"</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<div class="note "><p>为什么使用 <code>exec &lt; /dev/tty</code> 呢？因为默认情况下 git hooks 不是交互式的，这个命令允许用户使用终端与 commitizen 进行交互。</p></div>
-<h2 id="校验提交信息"><a href="#校验提交信息" class="headerlink" title="校验提交信息"></a>校验提交信息</h2><p><code>commitizen</code> 可以帮我们规范提交信息，但它并没有强制约束力。我们可以使用 <code>conventional-changelog</code> 生态中的 <a href="https://github.com/conventional-changelog/commitlint" target="_blank" rel="noopener">commitlint</a> 来校验提交信息。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev @commitlint/config-conventional @commitlint/cli</span><br></pre></td></tr></table></figure>
-<p>其中，<code>@commitlint/cli</code> 是命令行工具，<code>@commitlint/config-conventional</code> 是推荐的默认规范（基于 Angular 规范）。</p>
-<p>相关配置项可以写在如下两个地方：</p>
-<ul>
-<li>在 <code>package.json</code> 中添加 <code>commitlint</code> 属性</li>
-<li>在根目录下添加 <code>commitlint.config.js</code> <code>.commitlintrc.js</code> <code>.commitlintrc.json</code> 或 <code>.commitlintrc.yml</code> 文件</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  extends: [<span class="string">"@commitlint/config-conventional"</span>], <span class="comment">//继承已有的配置规则</span></span><br><span class="line">  parserPreset: <span class="built_in">String</span>,  <span class="comment">//解析器</span></span><br><span class="line">  formatter: <span class="built_in">String</span>, <span class="comment">//格式化输出</span></span><br><span class="line">  rules <span class="built_in">Object</span>, <span class="comment">//具体的校验规则</span></span><br><span class="line">  ignores: [<span class="built_in">Function</span>], <span class="comment">//如果需要忽略提交信息，则函数返回True</span></span><br><span class="line">  defaultIgnores: <span class="built_in">Boolean</span> <span class="comment">//是否使用默认的忽略规则</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><code>rules</code> 的配置手册请参见 <a href="https://github.com/conventional-changelog/commitlint/blob/master/docs/reference-rules.md" target="_blank" rel="noopener">reference-rules.md</a></p>
-<p>借助 <code>husky</code> 来添加 git hooks，即可在提交信息的时候自动启动 <code>commitlint</code></p>
-<figure class="highlight json"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"husky"</span>: &#123;</span><br><span class="line">    <span class="attr">"hooks"</span>: &#123;</span><br><span class="line">      <span class="attr">"commit-msg"</span>: <span class="string">"commitlint -E HUSKY_GIT_PARAMS"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<div class="note info"><p>更多使用说明请参考 <a href="https://commitlint.js.org/" target="_blank" rel="noopener">commitlint.js.org</a></p></div>
-<h1 id="规范发布流程"><a href="#规范发布流程" class="headerlink" title="规范发布流程"></a>规范发布流程</h1><p>当一个迭代周期结束的时候，我们需要将该周期内的改动梳理出来，然后根据改动内容来决定如何升级版本号。</p>
-<p>在此提供三种方案：</p>
-<ul>
-<li>conventional-changelog-cli</li>
-<li>semantic-release</li>
-<li>standard-version</li>
-</ul>
-<h2 id="conventional-changelog-cli"><a href="#conventional-changelog-cli" class="headerlink" title="conventional-changelog-cli"></a>conventional-changelog-cli</h2><p><a href="https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-cli" target="_blank" rel="noopener">conventional-changelog-cli</a> 可以用来自动生成 CHAGNELOG：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install -g conventional-changelog-cli</span><br><span class="line">conventional-changelog -p angular -i CHANGELOG.md -s</span><br></pre></td></tr></table></figure>
-<p>conventional-changelog-cli 只生成了 CHAGNELOG，但却没有自增版本号，所以我们可以搭配 <code>npm version</code> 来弥补其不足。</p>
-<p>添加如下脚本：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"conventional-changelog -p angular -i CHANGELOG.md -s &amp;&amp; git add CHANGELOG.md"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当需要发布流程的时候，以此执行以下步骤：</p>
-<ol>
-<li>提交本地更新</li>
-<li>拉取最新的 tags</li>
-<li>运行 <code>npm version [patch|minor|major]</code> 命令</li>
-<li>推送到远程仓库</li>
-</ol>
-<div class="note "><p>你可以添加一个 <code>preversion</code> 脚本来打包你的项目或者运行测试，也可以添加一个 <code>postversion</code> 脚本来清理系统并推送发布和 tags。</p></div>
-<p>在执行 <code>npm version</code> 的时候会自动产生一次以版本号命名的提交，如果想格式化这个提交的信息，可以在 <code>.npmrc</code> 中添加如下内容：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tag-version-prefix=&quot;&quot;</span><br><span class="line">message=&quot;chore(release): %s :tada:&quot;</span><br></pre></td></tr></table></figure>
-<p>这个方案流程上还不够优雅，因为还没法根据历史提交信息来自动升级版本号，并且还只支持 <code>angular</code> <code>atom</code> <code>codemirror</code> <code>ember</code> <code>eslint</code> <code>express</code> <code>jquery</code> <code>jscs</code> 和 <code>jshint</code> 这几种预设。</p>
-<p>所以，conventional-changelog 在 README 文档中给我们推荐了下文两种更高级的方案：</p>
-<h2 id="standard-version"><a href="#standard-version" class="headerlink" title="standard-version"></a>standard-version</h2><p><code>npm version</code> 的完美替代品，支持自动版本升级、生成 tag 和 CHAGNELOG。</p>
-<p>安装 <a href="https://github.com/conventional-changelog/standard-version" target="_blank" rel="noopener">standard-version</a>：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev standard-version</span><br></pre></td></tr></table></figure>
-<p>在 <code>package.json</code> 中添加如下脚本：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;release&quot;: &quot;standard-version&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h3><p>当你需要发布版本的时候，按照如下步骤进行：</p>
-<ol>
-<li><code>npm run release</code></li>
-<li><code>git push --follow-tags origin master</code></li>
-</ol>
-<div class="note info"><p>使用 <code>--follow-tags</code> 选项可以将与提交相关的 tags 推送到远程仓库。</p></div>
-<p>在这个过程中 <code>standard-version</code> 做了些什么呢？</p>
-<ol>
-<li>在元数据文件中升级版本号，如 <code>package.json</code> <code>composer.json</code> 等</li>
-<li>使用 <a href="https://github.com/conventional-changelog/conventional-changelog" target="_blank" rel="noopener">conventional-changelog</a> 更新 CHANGELOG.md</li>
-<li>提交 <code>package.json</code> 和 CHANGELOG.md</li>
-<li>打标签</li>
-</ol>
-<h3 id="配置项"><a href="#配置项" class="headerlink" title="配置项"></a>配置项</h3><p>如果需要修改生成 CHANGELOG 的规则，可以根据 <a href="https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.1.0/README.md" target="_blank" rel="noopener">conventional-changelog-config-spec</a> 中的配置项来进行自定义。</p>
-<p>配置规则可以写在如下两个地方：</p>
-<ul>
-<li>在 <code>package.json</code> 中添加 <code>standard-version</code> 属性</li>
-<li>在根目录下添加 <code>.versionrc</code> <code>.versionrc.json</code> 或 <code>.versionrc.js</code> 文件</li>
-</ul>
-<h3 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h3><p><code>standard-version --no-verify</code> 可以阻止如 <code>pre-commit</code> 等 git hooks，避免触发不必要的测试或校验流程。</p>
-<p>以及，支持生命周期脚本来完成定制化需求，如将 issues 的 url 片段从 github 改到 jira：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"standard-version"</span>: &#123;</span><br><span class="line">    <span class="string">"scripts"</span>: &#123;</span><br><span class="line">      <span class="string">"postchangelog"</span>: <span class="string">"replace 'https://github.com/myproject/issues/' 'https://myjira/browse/' CHANGELOG.md"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="semantic-release"><a href="#semantic-release" class="headerlink" title="semantic-release"></a>semantic-release</h2><p>支撑全自动化的打包发布工作流，包括自动升级版本号，生成发布说明，发布软件包。</p>
-<p>听起来和 <code>standard-version</code> 好像功能很相似，那么两者到底有什么区别呢？</p>
-<ul>
-<li><code>standard-version</code> 只对本地资源做更改：升级版本号，生成 CHANGELOG，打标签，但是并没有涉及到推送远程仓库及软件发布流程（如 <code>npm publish</code>）。</li>
-<li><code>semantic-release</code> 可以集成到 CI/CD 工作流中，支持本地开发到远程部署的全流程自动化。</li>
-</ul>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>安装 <a href="https://github.com/semantic-release/semantic-release" target="_blank" rel="noopener">semantic-release</a>：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev semantic-release</span><br></pre></td></tr></table></figure>
-<h3 id="CI"><a href="#CI" class="headerlink" title="CI"></a>CI</h3><p>这里解释了如何在 Gitlab CI 流程中集成 <code>semantic-release</code>：
-<a href="https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/gitlab-ci.md" target="_blank" rel="noopener">Using semantic-release with GitLab CI</a></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - test</span><br><span class="line">    - release</span><br><span class="line"></span><br><span class="line">before_script:</span><br><span class="line">  - npm install</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  image: node:8</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - npm test</span><br><span class="line"></span><br><span class="line">publish:</span><br><span class="line">  image: node:8</span><br><span class="line">  stage: release</span><br><span class="line">  script:</span><br><span class="line">    - npx semantic-release</span><br></pre></td></tr></table></figure>
-<h3 id="配置项-1"><a href="#配置项-1" class="headerlink" title="配置项"></a>配置项</h3><p><code>semantic-release</code> 的 <a href="https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#options" target="_blank" rel="noopener">配置项</a>、模式、<a href="https://github.com/semantic-release/semantic-release/blob/master/docs/usage/plugins.md" target="_blank" rel="noopener">插件</a> 可以设置在如下三个地方：</p>
-<ul>
-<li>根目录下的 <code>.releaserc</code> 文件，后缀名可以是 <code>.yaml</code> <code>.yml</code> <code>.json</code> <code>.js</code></li>
-<li>根目录下的 <code>release.config.js</code> 文件</li>
-<li><code>package.json</code> 文件中的 <code>release</code> 属性</li>
-</ul>
-<blockquote>
-<p>更多内容待实践后补充</p>
-</blockquote>
-<div class="reference-linking">参考链接</div>
-
-<ul>
-<li><a href="https://semver.org" target="_blank" rel="noopener">Semantic Versioning 2.0.0</a></li>
-<li><a href="https://github.com/commitizen/cz-cli" target="_blank" rel="noopener">commitizen/cz-cli</a></li>
-<li><a href="https://github.com/conventional-changelog/conventional-changelog" target="_blank" rel="noopener">conventional-changelog/conventional-changelog</a></li>
-<li><a href="https://github.com/conventional-changelog/standard-version" target="_blank" rel="noopener">conventional-changelog/standard-version</a></li>
-<li><a href="https://github.com/semantic-release/semantic-release" target="_blank" rel="noopener">semantic-release/semantic-release</a>：</li>
-</ul>
-]]></content>
-      <categories>
-        <category>技术</category>
-        <category>工程化</category>
-      </categories>
-      <tags>
-        <tag>CI/CD</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hexo搭建个人博客系列：写作技巧篇</title>
     <url>/posts/hexo-writing-skills.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="http://yearito-1256884783.image.myqcloud.com/thumbnails/mist.jpg!thumbnail" alt="题图" title="Photo by Henri Prestes"></p>
@@ -2114,12 +2005,12 @@ Bored</p>
 </ul>
 <p>示例效果如下：</p>
 
-        <div id="aplayer-LtsejUOS" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
+        <div id="aplayer-jmvErKxG" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
             <pre class="aplayer-lrc-content"></pre>
         </div>
         <script>
           var ap = new APlayer({
-            element: document.getElementById("aplayer-LtsejUOS"),
+            element: document.getElementById("aplayer-jmvErKxG"),
             narrow: false,
             autoplay: false,
             showlrc: 3,
@@ -2438,6 +2329,188 @@ Bored</p>
       </categories>
       <tags>
         <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何规范化 commit 信息</title>
+    <url>/posts/how-to-normalize-commit.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>最近在考虑如何规范化团队成员的提交信息与发布流程，包括以下一些具体的需求：</p>
+<ul>
+<li>规范 commit 信息的格式</li>
+<li>版本迭代时自动打 Tag 并生成 CHAGNELOG</li>
+</ul>
+<a id="more"></a>
+<h1 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h1><p>在项目中，我们遵循以下规范：</p>
+<h2 id="语义化版本"><a href="#语义化版本" class="headerlink" title="语义化版本"></a>语义化版本</h2><div class="note info"><p>参考规范：<a href="https://semver.org" target="_blank" rel="noopener">Semantic Versioning 2.0.0</a></p></div>
+<p>版本格式为：主版本号.次版本号.修订号，版本号递增规则如下：</p>
+<ol>
+<li>主版本号 [MAJOR]：当你做了不兼容的 API 修改，</li>
+<li>次版本号 [MINOR]：当你做了向下兼容的功能性新增，</li>
+<li>修订号 [PATCH]：当你做了向下兼容的问题修正。
+先行版本号及版本编译元数据可以加到“主版本号.次版本号.修订号”的后面，作为延伸。</li>
+</ol>
+<h2 id="提交信息规范"><a href="#提交信息规范" class="headerlink" title="提交信息规范"></a>提交信息规范</h2><p>目前社区使用最广泛的的 commit message 规范是 Conventional Commits，由 Angular Commit 规范演变而来。</p>
+<!-- 并且配备了非常全的工具：从 git commit 命令行工具 commitizen，到自动生成 CHAGNELOG 文件，以及 commitlint 规范验证工具，覆盖非常全面。 -->
+<div class="note info"><p>参考规范：<a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank" rel="noopener">Conventional Commits 1.0.0</a></p></div>
+<p>提交信息的内容结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;type&gt;[optinal scope]: &lt;description&gt;</span><br><span class="line"></span><br><span class="line">[optinal body]</span><br><span class="line"></span><br><span class="line">[optional footer(s)</span><br></pre></td></tr></table></figure>
+<p>提交信息的编写规范如下：</p>
+<ol>
+<li>fix 类型的提交表示在代码库中修复了一个 bug（和语义化版本中的 <code>PATCH</code> 相对应）。</li>
+<li>feat 类型的提交表示在代码库中新增了一个功能（和语义化版本中的 <code>MINOR</code> 相对应）。</li>
+<li>在正文或脚注的起始位置带有 <code>BREAKING CHANGE</code> 表示引入了破坏性 API 变更（和语义化版本中的 <code>MAJOR</code> 相对应）。</li>
+<li>允许除 fix 和 feat 外的其他类型，如基于 <a href="https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines" target="_blank" rel="noopener">Angular convention</a> 的 <a href="https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional" target="_blank" rel="noopener">@commitlint/config-conventional</a> 就推荐了 <code>build</code> <code>chore</code> <code>ci</code> <code>docs</code> <code>style</code> <code>refactor</code> <code>perf</code> <code>test</code> 等类型。</li>
+</ol>
+<p>额外的类型并非是由 conventional commits 强制约束的，并且对于语义化版本无影响（除非包含 BREAKING CHANGE）。</p>
+<p>为什么使用 conventional commits？</p>
+<ul>
+<li>自动化生成 CHAGNELOG。</li>
+<li>基于提交的类型，自动决定语义化的版本变更。</li>
+<li>向同事、公众与其他利益关系者传达变化的性质。</li>
+<li>触发构建和部署流程。</li>
+<li>让提交历史更加结构化，以便人们对你的项目做出贡献。</li>
+</ul>
+<p>说完了规范，我们需要了解如何确保规范 <strong>高效</strong>、<strong>准确</strong> 的执行。</p>
+<p>以我们团队目前的现状为例：</p>
+<ol>
+<li>虽然提出了 commit 信息的提交规范，但在执行上还是不彻底，如经常出现中英文冒号混用的情况</li>
+<li>迭代版本号由人工计算，容易出现纰漏</li>
+<li>每次版本迭代时需要手动整理 commit 信息来生成 ChangeLog</li>
+</ol>
+<p>所以，在敏捷的开发流程中，一切能够被自动化所取代的人工，都应该被取代。</p>
+<p><img src="https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/assets%2F-LGsE7zdvzHI5cG-XV6p%2F-LgZJHU7wjHywLK9p0Mz%2F-LSqFWM0RYcz0dv1n7Oc%2Fbender.png?generation=1559682450938503&amp;alt=media" alt></p>
+<h1 id="约束提交信息"><a href="#约束提交信息" class="headerlink" title="约束提交信息"></a>约束提交信息</h1><p>明文约定是最简单的规范约束了，可以将提交规范写在 <code>CONTRIBUTING.md</code> 中，也可以写在 commit template 中，但这种方案依赖于主观意识，约束力很弱，所以有必要借助工具来强制执行。</p>
+<h2 id="借助工具规范化提交"><a href="#借助工具规范化提交" class="headerlink" title="借助工具规范化提交"></a>借助工具规范化提交</h2><p><a href="https://github.com/commitizen/cz-cli" target="_blank" rel="noopener">commitizen</a> 是最常用的规范化提交工具，它提供的 <code>git cz</code> 命令可以取代 <code>git commit</code> 命令，来接管你的提交流程，并引导你完成一次合格的符合规范的代码提交。</p>
+<p>首先全局安装 commitizen 命令行工具：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install -g commitizen</span><br></pre></td></tr></table></figure>
+<p>然后我们需要选择适配器（Adaptor），也即是指定具体的提交规范。举个例子，如果我们的项目要采用 AngularJS 的提交规范，那么我们需要安装如下适配器：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">commitizen init cz-conventional-changelog --save-dev --save-exact</span><br></pre></td></tr></table></figure>
+<p>这行命令将会做三件事：</p>
+<ol>
+<li>安装 <code>cz-conventional-changelog</code> 适配器</li>
+<li>将依赖关系保存在 <code>package.json</code> 中</li>
+<li>在 <code>package.json</code> 添加跟属性，如下：</li>
+</ol>
+<figure class="highlight js"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">"config"</span>: &#123;</span><br><span class="line">  <span class="string">"commitizen"</span>: &#123;</span><br><span class="line">    <span class="string">"path"</span>: <span class="string">"cz-conventional-changelog"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时执行 <code>git cz</code> 命令即可看到 conventional-changelog 适配器已经生效了：</p>
+<p><img src="http://qiniu.yearito.cn/how-to-normalize-commit/commitizen.jpg" alt></p>
+<h2 id="可定制的适配器"><a href="#可定制的适配器" class="headerlink" title="可定制的适配器"></a>可定制的适配器</h2><p>如果不习惯于 AngularJS 的这套规范，那么我们可以选择 <a href="https://github.com/leonardoanalista/cz-customizable" target="_blank" rel="noopener">cz-customizable</a> 适配器，通过修改配置文件的方式来制定符合本团队的的提交规范。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev cz-customizable</span><br></pre></td></tr></table></figure>
+<p>修改配置文件以使用 <code>cz-customizable</code> 作为适配器：</p>
+<figure class="highlight js"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">"config"</span>: &#123;</span><br><span class="line">  <span class="string">"commitizen"</span>: &#123;</span><br><span class="line">    <span class="string">"path"</span>: <span class="string">"node_modules/cz-customizable"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在项目根目录下新建 <code>.cz-config.js</code> 文件作为规范配置文件，并在 <a href="https://github.com/leonardoanalista/cz-customizable/blob/master/cz-config-EXAMPLE.js" target="_blank" rel="noopener">官方案例</a> 的基础上进行修改（<a href="https://github.com/leonardoanalista/cz-customizable#options" target="_blank" rel="noopener">配置选项释义</a>）：</p>
+<figure class="highlight js"><figcaption><span>.cz-config.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  types: [</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"feat"</span>, <span class="attr">name</span>: <span class="string">"✨ feat: A new feature"</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"fix"</span>, <span class="attr">name</span>: <span class="string">"🐞 fix: A bug fix"</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"docs"</span>, <span class="attr">name</span>: <span class="string">"📖 docs: Documentation only changes"</span> &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"style"</span>,</span><br><span class="line">      name:</span><br><span class="line">        <span class="string">"👚 style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"refactor"</span>,</span><br><span class="line">      name:</span><br><span class="line">        <span class="string">"🛠 refactor: A code change that neither fixes a bug nor adds a feature"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"perf"</span>,</span><br><span class="line">      name: <span class="string">"🚀 perf: A code change that improves performance"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"test"</span>, <span class="attr">name</span>: <span class="string">"💊 test: Adding missing tests"</span> &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      value: <span class="string">"chore"</span>,</span><br><span class="line">      name:</span><br><span class="line">        <span class="string">"🗯 chore: Changes to the build process or auxiliary tools and libraries such as documentation generation"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"revert"</span>, <span class="attr">name</span>: <span class="string">"⏪ revert: Revert to a commit"</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">value</span>: <span class="string">"WIP"</span>, <span class="attr">name</span>: <span class="string">"💪 WIP: Work in progress"</span> &#125;</span><br><span class="line">  ],</span><br><span class="line"></span><br><span class="line">  scopes: [],</span><br><span class="line"></span><br><span class="line">  allowTicketNumber: <span class="literal">false</span>,</span><br><span class="line">  isTicketNumberRequired: <span class="literal">false</span>,</span><br><span class="line">  ticketNumberPrefix: <span class="string">"ISSUES-CLOSED"</span>,</span><br><span class="line">  ticketNumberRegExp: <span class="string">"\\d&#123;1,5&#125;"</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// override the messages, defaults are as follows</span></span><br><span class="line">  messages: &#123;</span><br><span class="line">    type: <span class="string">"Select the type of change that you're committing:"</span>,</span><br><span class="line">    scope: <span class="string">"\nDenote the SCOPE of this change (optional):"</span>,</span><br><span class="line">    <span class="comment">// used if allowCustomScopes is true</span></span><br><span class="line">    customScope: <span class="string">"Denote the SCOPE of this change:"</span>,</span><br><span class="line">    subject: <span class="string">"Write a SHORT, IMPERATIVE tense description of the change:\n"</span>,</span><br><span class="line">    body:</span><br><span class="line">      <span class="string">'Provide a LONGER description of the change (optional). Use "|" to break new line:\n'</span>,</span><br><span class="line">    breaking: <span class="string">"List any BREAKING CHANGES (optional):\n"</span>,</span><br><span class="line">    footer:</span><br><span class="line">      <span class="string">"List any ISSUES CLOSED by this change (optional). E.g.: #31, #34:\n"</span>,</span><br><span class="line">    confirmCommit: <span class="string">"Are you sure you want to proceed with the commit above?"</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  allowCustomScopes: <span class="literal">true</span>,</span><br><span class="line">  allowBreakingChanges: [<span class="string">"feat"</span>, <span class="string">"fix"</span>],</span><br><span class="line">  <span class="comment">// skip any questions you want</span></span><br><span class="line">  skipQuestions: [<span class="string">"scope"</span>, <span class="string">"customScope"</span>, <span class="string">"body"</span>],</span><br><span class="line"></span><br><span class="line">  <span class="comment">// limit subject length</span></span><br><span class="line">  subjectLimit: <span class="number">100</span></span><br><span class="line">  <span class="comment">// breaklineChar: '|', // It is supported for fields body and footer.</span></span><br><span class="line">  <span class="comment">// footerPrefix : 'ISSUES CLOS  ED:'</span></span><br><span class="line">  <span class="comment">// askForBreakingChangeFirst : true, // default is false</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="自定义适配器"><a href="#自定义适配器" class="headerlink" title="自定义适配器"></a>自定义适配器</h2><p>如果连自定义适配器都无法满足你的需求了，则可以考虑自己写一个适配器。</p>
+<p>先随便 fork 一个适配器到本地，如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone git@github.com:Coodool/cz-conventional-changelog.git</span><br></pre></td></tr></table></figure>
+<p>根据业务修改 <code>engine.js</code> 中的各项交互细节和提交规范，发布到 npm 中，然后就和使用其他适配器的方法一样了。</p>
+<h2 id="内置到-git-工作流中"><a href="#内置到-git-工作流中" class="headerlink" title="内置到 git 工作流中"></a>内置到 git 工作流中</h2><p>使用 <code>git cz</code> 来替代 <code>git commit</code>，看起来不太优雅，有没有办法在通过 <code>git commit</code> 提交的时候也能启动 <code>commitizen</code> 呢？这样一来，就能确保所有的提交者都必须通过 <code>commitizen</code> 来提交了。</p>
+<p>我们可以通过 git hooks 和 <code>--hook</code> 选项来介入到提交信息流程中，将 <code>commitizen</code> 合并到原生的 git 工作流中。这里有两个方案可供选择：</p>
+<h3 id="git-hooks"><a href="#git-hooks" class="headerlink" title="git hooks"></a>git hooks</h3><figure class="highlight bash"><figcaption><span>.git/hooks/prepare-commit-msg</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">+ <span class="built_in">exec</span> &lt; /dev/tty &amp;&amp; node_modules/.bin/git-cz --hook || <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h3 id="Husky"><a href="#Husky" class="headerlink" title="Husky"></a>Husky</h3><p><a href="https://github.com/typicode/husky" target="_blank" rel="noopener">Husky</a> 提供了一种更方便的处理 git hooks 的方式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev husky</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">"husky"</span>: &#123;</span><br><span class="line">  <span class="string">"hooks"</span>: &#123;</span><br><span class="line">    <span class="string">"prepare-commit-msg"</span>: <span class="string">"exec &lt; /dev/tty &amp;&amp; git cz --hook || true"</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="note "><p>为什么使用 <code>exec &lt; /dev/tty</code> 呢？因为默认情况下 git hooks 不是交互式的，这个命令允许用户使用终端与 commitizen 进行交互。</p></div>
+<h2 id="校验提交信息"><a href="#校验提交信息" class="headerlink" title="校验提交信息"></a>校验提交信息</h2><p><code>commitizen</code> 可以帮我们规范提交信息，但它并没有强制约束力。我们可以使用 <code>conventional-changelog</code> 生态中的 <a href="https://github.com/conventional-changelog/commitlint" target="_blank" rel="noopener">commitlint</a> 来校验提交信息。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev @commitlint/config-conventional @commitlint/cli</span><br></pre></td></tr></table></figure>
+<p>其中，<code>@commitlint/cli</code> 是命令行工具，<code>@commitlint/config-conventional</code> 是推荐的默认规范（基于 Angular 规范）。</p>
+<p>相关配置项可以写在如下两个地方：</p>
+<ul>
+<li>在 <code>package.json</code> 中添加 <code>commitlint</code> 属性</li>
+<li>在根目录下添加 <code>commitlint.config.js</code> <code>.commitlintrc.js</code> <code>.commitlintrc.json</code> 或 <code>.commitlintrc.yml</code> 文件</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  extends: [<span class="string">"@commitlint/config-conventional"</span>], <span class="comment">//继承已有的配置规则</span></span><br><span class="line">  parserPreset: <span class="built_in">String</span>,  <span class="comment">//解析器</span></span><br><span class="line">  formatter: <span class="built_in">String</span>, <span class="comment">//格式化输出</span></span><br><span class="line">  rules <span class="built_in">Object</span>, <span class="comment">//具体的校验规则</span></span><br><span class="line">  ignores: [<span class="built_in">Function</span>], <span class="comment">//如果需要忽略提交信息，则函数返回True</span></span><br><span class="line">  defaultIgnores: <span class="built_in">Boolean</span> <span class="comment">//是否使用默认的忽略规则</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>rules</code> 的配置手册请参见 <a href="https://github.com/conventional-changelog/commitlint/blob/master/docs/reference-rules.md" target="_blank" rel="noopener">reference-rules.md</a></p>
+<p>借助 <code>husky</code> 来添加 git hooks，即可在提交信息的时候自动启动 <code>commitlint</code></p>
+<figure class="highlight json"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"husky"</span>: &#123;</span><br><span class="line">    <span class="attr">"hooks"</span>: &#123;</span><br><span class="line">      <span class="attr">"commit-msg"</span>: <span class="string">"commitlint -E HUSKY_GIT_PARAMS"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="note info"><p>更多使用说明请参考 <a href="https://commitlint.js.org/" target="_blank" rel="noopener">commitlint.js.org</a></p></div>
+<h1 id="规范发布流程"><a href="#规范发布流程" class="headerlink" title="规范发布流程"></a>规范发布流程</h1><p>当一个迭代周期结束的时候，我们需要将该周期内的改动梳理出来，然后根据改动内容来决定如何升级版本号。</p>
+<p>在此提供三种方案：</p>
+<ul>
+<li>conventional-changelog-cli</li>
+<li>semantic-release</li>
+<li>standard-version</li>
+</ul>
+<h2 id="conventional-changelog-cli"><a href="#conventional-changelog-cli" class="headerlink" title="conventional-changelog-cli"></a>conventional-changelog-cli</h2><p><a href="https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-cli" target="_blank" rel="noopener">conventional-changelog-cli</a> 可以用来自动生成 CHAGNELOG：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install -g conventional-changelog-cli</span><br><span class="line">conventional-changelog -p angular -i CHANGELOG.md -s</span><br></pre></td></tr></table></figure>
+<p>conventional-changelog-cli 只生成了 CHAGNELOG，但却没有自增版本号，所以我们可以搭配 <code>npm version</code> 来弥补其不足。</p>
+<p>添加如下脚本：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"conventional-changelog -p angular -i CHANGELOG.md -s &amp;&amp; git add CHANGELOG.md"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当需要发布流程的时候，以此执行以下步骤：</p>
+<ol>
+<li>提交本地更新</li>
+<li>拉取最新的 tags</li>
+<li>运行 <code>npm version [patch|minor|major]</code> 命令</li>
+<li>推送到远程仓库</li>
+</ol>
+<div class="note "><p>你可以添加一个 <code>preversion</code> 脚本来打包你的项目或者运行测试，也可以添加一个 <code>postversion</code> 脚本来清理系统并推送发布和 tags。</p></div>
+<p>在执行 <code>npm version</code> 的时候会自动产生一次以版本号命名的提交，如果想格式化这个提交的信息，可以在 <code>.npmrc</code> 中添加如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tag-version-prefix=&quot;&quot;</span><br><span class="line">message=&quot;chore(release): %s :tada:&quot;</span><br></pre></td></tr></table></figure>
+<p>这个方案流程上还不够优雅，因为还没法根据历史提交信息来自动升级版本号，并且还只支持 <code>angular</code> <code>atom</code> <code>codemirror</code> <code>ember</code> <code>eslint</code> <code>express</code> <code>jquery</code> <code>jscs</code> 和 <code>jshint</code> 这几种预设。</p>
+<p>所以，conventional-changelog 在 README 文档中给我们推荐了下文两种更高级的方案：</p>
+<h2 id="standard-version"><a href="#standard-version" class="headerlink" title="standard-version"></a>standard-version</h2><p><code>npm version</code> 的完美替代品，支持自动版本升级、生成 tag 和 CHAGNELOG。</p>
+<p>安装 <a href="https://github.com/conventional-changelog/standard-version" target="_blank" rel="noopener">standard-version</a>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev standard-version</span><br></pre></td></tr></table></figure>
+<p>在 <code>package.json</code> 中添加如下脚本：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;release&quot;: &quot;standard-version&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h3><p>当你需要发布版本的时候，按照如下步骤进行：</p>
+<ol>
+<li><code>npm run release</code></li>
+<li><code>git push --follow-tags origin master</code></li>
+</ol>
+<div class="note info"><p>使用 <code>--follow-tags</code> 选项可以将与提交相关的 tags 推送到远程仓库。</p></div>
+<p>在这个过程中 <code>standard-version</code> 做了些什么呢？</p>
+<ol>
+<li>在元数据文件中升级版本号，如 <code>package.json</code> <code>composer.json</code> 等</li>
+<li>使用 <a href="https://github.com/conventional-changelog/conventional-changelog" target="_blank" rel="noopener">conventional-changelog</a> 更新 CHANGELOG.md</li>
+<li>提交 <code>package.json</code> 和 CHANGELOG.md</li>
+<li>打标签</li>
+</ol>
+<h3 id="配置项"><a href="#配置项" class="headerlink" title="配置项"></a>配置项</h3><p>如果需要修改生成 CHANGELOG 的规则，可以根据 <a href="https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.1.0/README.md" target="_blank" rel="noopener">conventional-changelog-config-spec</a> 中的配置项来进行自定义。</p>
+<p>配置规则可以写在如下两个地方：</p>
+<ul>
+<li>在 <code>package.json</code> 中添加 <code>standard-version</code> 属性</li>
+<li>在根目录下添加 <code>.versionrc</code> <code>.versionrc.json</code> 或 <code>.versionrc.js</code> 文件</li>
+</ul>
+<h3 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h3><p><code>standard-version --no-verify</code> 可以阻止如 <code>pre-commit</code> 等 git hooks，避免触发不必要的测试或校验流程。</p>
+<p>以及，支持生命周期脚本来完成定制化需求，如将 issues 的 url 片段从 github 改到 jira：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"standard-version"</span>: &#123;</span><br><span class="line">    <span class="string">"scripts"</span>: &#123;</span><br><span class="line">      <span class="string">"postchangelog"</span>: <span class="string">"replace 'https://github.com/myproject/issues/' 'https://myjira/browse/' CHANGELOG.md"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="semantic-release"><a href="#semantic-release" class="headerlink" title="semantic-release"></a>semantic-release</h2><p>支撑全自动化的打包发布工作流，包括自动升级版本号，生成发布说明，发布软件包。</p>
+<p>听起来和 <code>standard-version</code> 好像功能很相似，那么两者到底有什么区别呢？</p>
+<ul>
+<li><code>standard-version</code> 只对本地资源做更改：升级版本号，生成 CHANGELOG，打标签，但是并没有涉及到推送远程仓库及软件发布流程（如 <code>npm publish</code>）。</li>
+<li><code>semantic-release</code> 可以集成到 CI/CD 工作流中，支持本地开发到远程部署的全流程自动化。</li>
+</ul>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>安装 <a href="https://github.com/semantic-release/semantic-release" target="_blank" rel="noopener">semantic-release</a>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install --save-dev semantic-release</span><br></pre></td></tr></table></figure>
+<h3 id="CI"><a href="#CI" class="headerlink" title="CI"></a>CI</h3><p>这里解释了如何在 Gitlab CI 流程中集成 <code>semantic-release</code>：
+<a href="https://github.com/semantic-release/semantic-release/blob/master/docs/recipes/gitlab-ci.md" target="_blank" rel="noopener">Using semantic-release with GitLab CI</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stages:</span><br><span class="line">    - test</span><br><span class="line">    - release</span><br><span class="line"></span><br><span class="line">before_script:</span><br><span class="line">  - npm install</span><br><span class="line"></span><br><span class="line">test:</span><br><span class="line">  image: node:8</span><br><span class="line">  stage: test</span><br><span class="line">  script:</span><br><span class="line">    - npm test</span><br><span class="line"></span><br><span class="line">publish:</span><br><span class="line">  image: node:8</span><br><span class="line">  stage: release</span><br><span class="line">  script:</span><br><span class="line">    - npx semantic-release</span><br></pre></td></tr></table></figure>
+<h3 id="配置项-1"><a href="#配置项-1" class="headerlink" title="配置项"></a>配置项</h3><p><code>semantic-release</code> 的 <a href="https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#options" target="_blank" rel="noopener">配置项</a>、模式、<a href="https://github.com/semantic-release/semantic-release/blob/master/docs/usage/plugins.md" target="_blank" rel="noopener">插件</a> 可以设置在如下三个地方：</p>
+<ul>
+<li>根目录下的 <code>.releaserc</code> 文件，后缀名可以是 <code>.yaml</code> <code>.yml</code> <code>.json</code> <code>.js</code></li>
+<li>根目录下的 <code>release.config.js</code> 文件</li>
+<li><code>package.json</code> 文件中的 <code>release</code> 属性</li>
+</ul>
+<blockquote>
+<p>更多内容待实践后补充</p>
+</blockquote>
+<div class="reference-linking">参考链接</div>
+
+<ul>
+<li><a href="https://semver.org" target="_blank" rel="noopener">Semantic Versioning 2.0.0</a></li>
+<li><a href="https://github.com/commitizen/cz-cli" target="_blank" rel="noopener">commitizen/cz-cli</a></li>
+<li><a href="https://github.com/conventional-changelog/conventional-changelog" target="_blank" rel="noopener">conventional-changelog/conventional-changelog</a></li>
+<li><a href="https://github.com/conventional-changelog/standard-version" target="_blank" rel="noopener">conventional-changelog/standard-version</a></li>
+<li><a href="https://github.com/semantic-release/semantic-release" target="_blank" rel="noopener">semantic-release/semantic-release</a>：</li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术</category>
+        <category>工程化</category>
+      </categories>
+      <tags>
+        <tag>CI/CD</tag>
       </tags>
   </entry>
   <entry>

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://freegale.github.io/posts/Defects-when-setting-up-my-blog.html</loc>
+    <lastmod>2020-11-05</lastmod>
+  </url>
+  <url>
     <loc>http://freegale.github.io/posts/hexo-advanced-settings.html</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
@@ -45,11 +49,11 @@
     <lastmod>2020-11-05</lastmod>
   </url>
   <url>
-    <loc>http://freegale.github.io/posts/axios-or-fetch-api.html</loc>
+    <loc>http://freegale.github.io/posts/backup-hexo-to-github.html</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   <url>
-    <loc>http://freegale.github.io/posts/backup-hexo-to-github.html</loc>
+    <loc>http://freegale.github.io/posts/axios-or-fetch-api.html</loc>
     <lastmod>2020-11-05</lastmod>
   </url>
   <url>
